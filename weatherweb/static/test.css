@@ -1,0 +1,268 @@
+/*test.css - LIGHT MODE*/
+
+/*Variables*/
+:root {
+    --primary-body-color: linear-gradient(to bottom, #eef2f3, #d6d8db);
+	--secondary-body-color: #b3b3b3;
+	--primary-text-color: #333;
+	--secondary-text-color: white;
+	--primary-card-color: #919191;
+	--primary-label-color: #555;
+	--primary-button-text-color: black;
+    --primary-button-background-color: #4CAF50;
+	--primary-button-background-hover-color: #1c5c1f;
+	--secondary-button-background-color: #ffcc00;
+	--secondary-button-background-hover-color: #ffa500;
+    --primary-link-color: blue;
+}
+
+
+/* Allgemeine Einstellungen */
+.body_dashboard {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--secondary-body-color);
+    color: var(--secondary-text-color);
+}
+
+h1 {
+    font-size: 36px;
+    margin: 0;
+}
+
+.link {
+    text-decoration: none;
+    color: var(--primary-link-color);
+}
+
+.highlight {
+    color: var(--secondary-text-color);
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 20px;
+    background: var(--primary-button-background-color);
+    color: var(--secondary-text-color);
+}
+
+.search-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#city {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    width: 250px;
+}
+
+.button_search {
+    padding: 10px 20px;
+    font-size: 16px;
+    background: var(--secondary-button-background-color);
+	color: var(--secondary-text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button_search:hover {
+    background: var(--secondary-button-background-hover-color);
+}
+
+/* Hauptinhalt */
+.main-content {
+    padding: 20px;
+}
+
+/* Wochenübersicht */
+.weekdays {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.weekday-card {
+    padding: 15px 20px;
+    background: var(--primary-button-background-color);
+    color: var(--secondary-text-color);
+    border-radius: 10px;
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+    max-width: 150px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.weekday-card:hover {
+    transform: scale(1.1);
+    background: var(--primary-button-background-hover-color);
+}
+
+/* Wetterkarte */
+.weather-card {
+    background: var(--primary-card-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
+
+.weather-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.city-info {
+    font-size: 18px;
+    margin: 0;
+    color: var(--secondary-text-color);
+}
+
+.date {
+    font-size: 16px;
+    color: var(--secondary-text-color);
+}
+
+.weather-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+	color: var(--secondary-text-color);
+}
+
+.temperature {
+    text-align: left;
+}
+
+.temp-value {
+    font-size: 48px;
+    margin: 0;
+}
+
+.weather-description,
+.feels-like {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.weather-icon img {
+    width: 100px;
+    height: 100px;
+}
+
+.weather-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    color: var(--secondary-text-color);
+}
+
+hr {
+    color: var(--secondary-text-color);
+}
+
+.info-link {
+    color: var(--primary-link-color);
+    text-decoration: none;
+}
+
+.info-link:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 10px;
+    background: var(--primary-button-background-color);
+    color: var(--secondary-text-color);
+    position: fixed;
+    bottom: 0;
+    min-width: -webkit-fill-available;
+}
+
+.logout-link {
+    color: var(--secondary-text-color);
+    text-decoration: none;
+}
+
+.logout-link:hover {
+    text-decoration: underline;
+}
+
+/*LOGIN/REGISTER*/
+.body_login_register {
+    display: flex;
+	color: var(--secondary-text-color);
+	/*color: #e8e6e3;*/
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+    line-height: 1.5;
+    background-color: var(--primary-body-color);
+    flex-direction: column;
+    margin: 0;
+}
+
+.label {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    text-align: left;
+    color: var(--secondary-text-color);
+    font-weight: bold;
+}
+
+.input {
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: var(--secondary-text-color);
+    color: var(--primary-text-color);
+}
+
+.main_login {
+    background-color: var(--primary-card-color);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    transition: transform 0.2s;
+    width: 500px;
+    text-align: center;
+}
+
+#btn_submit {
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border: none;
+    color: var(--secondary-text-color);
+    cursor: pointer;
+    background-color:var(--primary-button-background-color);
+    width: 100%;
+    font-size: 16px;
+	&:hover {
+		cursor: pointer;
+		background-color: var(--primary-button-background-hover-color);
+	}
+}

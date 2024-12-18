@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<body class="body_login_register">
+    <img src="../static/logo.png" width="7%">
+    <div class="main_login">
+        <h1>WeatherWEB</h1>
+        <h3>Enter your login credentials</h3>
+        <p style="color: red;"><strong>{{info}}</strong></p>
+
+        <form action="{{url_for('login')}}" ,  method="POST">
+            <label class="label" for="username">Username:</label>
+            <input class="input" type="text" id="username" name="username"
+                placeholder="Enter your Username" required>
+
+            <label class="label" for="password">Password:</label>
+            <input class="input" type="password" id="password" name="password"
+                placeholder="Enter your Password" required>
+
+            <div class="wrap">
+                <button class="button" id="btn_submit" type="submit">Submit</button>
+            </div>
+        </form>
+
+        <p>You have no account?
+            <a class="link" href="{{url_for('register')}}">Create an account</a>
+        </p>
+    </div>
+</body>
+{% endblock %}

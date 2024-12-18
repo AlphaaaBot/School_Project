@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<body class="body_dashboard">
+    <header class="header">
+        <h1>Weather<span class="highlight">WEB</span></h1>
+        <div class="search-container">
+            <form action="/dashboard" method="POST">
+                <input type="text" id="city" name="city" placeholder="Enter a city" required>
+                <button id="search" name="test" class="button_search" type="submit">Search</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Wochenübersicht -->
+        <section class="weekdays">
+            <div class="weekday-card">Heute</div>
+            <div class="weekday-card">Morgen</div>
+            <div class="weekday-card">Übermorgen</div>
+            <div class="weekday-card">Dienstag</div>
+            <div class="weekday-card">Mittwoch</div>
+            <div class="weekday-card">Donnerstag</div>
+            <div class="weekday-card">Freitag</div>
+        </section>
+
+        <!-- Wetterkarte -->
+        <section class="weather-card">
+            <div class="weather-header">
+                <p class="city-info">{{ weather["name"] }}, {{ weather["country"] }} - 20:00 Uhr</p>
+                <p class="date">30.11.2024</p>
+            </div>
+            <div class="weather-main">
+                <div class="temperature">
+                    <p class="temp-value">{{ weather["temp"] }}°</p>
+                    <p class="weather-description">{{ weather["description"] }}</p>
+                    <p class="feels-like">Feels like: {{ weather["feels_like"] }}°</p>
+                </div>
+                <div class="weather-icon">
+                    <img src="https://openweathermap.org/img/w/{{ weather["icon"] }}.png" alt="current weather icon">
+                </div>
+            </div>
+            <div class="weather-footer">
+                <p><strong>Warnung:</strong> FROST!</p>
+                <a href="#" class="info-link">Mehr Infos!</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <a href="{{url_for('logout')}}" class="logout-link">Logout here</a>
+    </footer>
+</body>
+{% endblock %}

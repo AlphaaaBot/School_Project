@@ -1,0 +1,20 @@
+- weather: icon
+- weather: main
+- weather: description
+
+- main: temp
+- main: feels_like
+- main: humidity
+
+- wind: speed
+
+- rain: 1h
+
+- clouds: all
+
+- sys: country
+- sys: sunrise
+- sys: sunset
+
+- timezone
+- name
