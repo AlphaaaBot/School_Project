@@ -1,3 +1,5 @@
+Hier wird davon ausgegangen, das Visual Studio Code verwendet wird.
+
 Schritt 1:
 
 Um die Seite austesten zu können, müssen Sie sich einen API Key von OpenWeatherMap erstellen und dazu einen neuen Account machen.
@@ -6,7 +8,9 @@ Link zu openweathermap: https://openweathermap.org/
 
 Schritt 2:
 
-Erstellen Sie eine .venv datei und installieren sie mit dem Befehl: [ pip install -r requirements.txt ] die vorgegebenen requirements, die im Verzeichnis zu finden ist.
+Wir haben den repository installiert und extrahiert. Nun sind wir im Verzeichnis ./School_Project.
+Erstellen Sie einen .venv ordner (Virtual Environment für die Python packages) im Verzeichnis und gehen Sie mit dem Befehl: [ .venv/Scripts/activate ] in den venv scope hinein.
+Installieren sie mit dem Befehl: [ pip install -r requirements.txt ] die vorgegebenen requirements, die im Verzeichnis zu finden ist.
 
 Schritt 3:
 
