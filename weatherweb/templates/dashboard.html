@@ -27,8 +27,8 @@
         <!-- Wetterkarte -->
         <section class="weather-card">
             <div class="weather-header">
-                <p class="city-info">{{ weather["name"] }}, {{ weather["country"] }} - 20:00 Uhr</p>
-                <p class="date">30.11.2024</p>
+                <p class="city-info">{{ weather["name"] }}, {{ weather["country"] }} - {{weather["time"]}} Uhr</p>
+                <p class="date">{{weather["date"]}}</p>
             </div>
             <div class="weather-main">
                 <div class="temperature">
@@ -45,6 +45,8 @@
                 <a href="#" class="info-link">Mehr Infos!</a>
             </div>
         </section>
+        <hr>
+        <p class="errorMsg">{{error}}</p>
     </main>
 
     <footer class="footer">

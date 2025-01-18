@@ -2,11 +2,14 @@
 # this script shows a web page and gets the current weather state from the given city
 
 import os
+import pytz
 import bcrypt
 import requests
+from datetime import datetime
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
+from timezonefinder import TimezoneFinder
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 
 ######################################################
 # VARIABLES
@@ -69,7 +72,17 @@ class API():
     def getAPIMapDataEndpointFromEnv(self):
         load_dotenv(".env")
         return os.getenv("web_api_endpoint_map_data")
-
+    
+    # General
+    def getCurrentLocaleTimeAndDate(self, longitude, latitude):
+        tf = TimezoneFinder()
+        timezone_str = tf.timezone_at(lng=longitude, lat=latitude)
+        timezone = pytz.timezone(timezone_str)
+        current_time = datetime.now(timezone).strftime('%H:%M')
+        current_date = datetime.now(timezone).strftime("%d/%m/%Y")
+        obj_datetime = {"date":current_date, "time":current_time}
+        return obj_datetime
+    
     # APICALLS
     def getCurrentWeatherInCityAsJSON(self, city):
         url = f"{self.web_api_endpoint_raw_data}/data/2.5/weather?units=metric&q={city}&appid={self.web_api_key}"
@@ -79,43 +92,46 @@ class API():
             return data
         
         return None
-
+    
     def getWeatherIconCode(self, city):
         data = self.getCurrentWeatherInCityAsJSON(city)
         return data["weather"]["icon"] if not data == None else None
     
     def getDashboardInfoAsJSON(self, city):
         data = self.getCurrentWeatherInCityAsJSON(city)
-        weather_dashboard_obj = {}
-        # weather
+        if data != None:
+            weather_dashboard_obj = {}
+            # weather
+            weather_dashboard_obj.update({"icon":str(data["weather"][0]["icon"])})
+            weather_dashboard_obj.update({"main":str(data["weather"][0]["main"])})
+            weather_dashboard_obj.update({"description":str(data["weather"][0]["description"])})
+            # main
+            temp = int(data["main"]["temp"])
+            feels_like = int(data["main"]["feels_like"])
+            weather_dashboard_obj.update({"temp":str(temp)})
+            weather_dashboard_obj.update({"feels_like":str(feels_like)})
+            weather_dashboard_obj.update({"humidity":str(data["main"]["humidity"])})
+            # wind
+            weather_dashboard_obj.update({"speed":str(data["wind"]["speed"])})
+            # clouds
+            weather_dashboard_obj.update({"all":str(data["clouds"]["all"])})
+            # sys
+            weather_dashboard_obj.update({"country":str(data["sys"]["country"])})
+            weather_dashboard_obj.update({"sunrise":str(data["sys"]["sunrise"])})
+            weather_dashboard_obj.update({"sunset":str(data["sys"]["sunset"])})
+            # timezone
+            obj_datetime = self.getCurrentLocaleTimeAndDate(data["coord"]["lon"], data["coord"]["lat"])
+            print(f"time: {obj_datetime["time"]}\ndate: {obj_datetime["date"]}")
+            weather_dashboard_obj.update({"time":str(obj_datetime["time"])})
+            weather_dashboard_obj.update({"date":str(obj_datetime["date"])})
+            weather_dashboard_obj.update({"timezone":str(data["timezone"])})
+            # name
+            weather_dashboard_obj.update({"name":str(data["name"])})
         
-        weather_dashboard_obj.update({"icon":str(data["weather"][0]["icon"])})
-        weather_dashboard_obj.update({"main":str(data["weather"][0]["main"])})
-        weather_dashboard_obj.update({"description":str(data["weather"][0]["description"])})
-        
-        # main
-        weather_dashboard_obj.update({"temp":str(data["main"]["temp"])})
-        weather_dashboard_obj.update({"feels_like":str(data["main"]["feels_like"])})
-        weather_dashboard_obj.update({"humidity":str(data["main"]["humidity"])})
-        
-        # wind
-        weather_dashboard_obj.update({"speed":str(data["wind"]["speed"])})
-        
-        # clouds
-        weather_dashboard_obj.update({"all":str(data["clouds"]["all"])})
-        
-        # sys
-        weather_dashboard_obj.update({"country":str(data["sys"]["country"])})
-        weather_dashboard_obj.update({"sunrise":str(data["sys"]["sunrise"])})
-        weather_dashboard_obj.update({"sunset":str(data["sys"]["sunset"])})
-        
-        # timezone
-        weather_dashboard_obj.update({"timezone":str(data["timezone"])})
-        
-        # name
-        weather_dashboard_obj.update({"name":str(data["name"])})
-        
-        return weather_dashboard_obj
+            return weather_dashboard_obj
+        else:
+            return None
+    
 
 ######################################################
 # ROUTES
@@ -185,7 +201,13 @@ def dashboard():
             fetch_api = API()
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             print(data)
-            return render_template("dashboard.html", username=session["username"], weather=data)
+            
+            if data != None:
+                return render_template("dashboard.html", username=session["username"], weather=data)
+            else:
+                data = fetch_api.getDashboardInfoAsJSON(city="Bad Nauheim")
+                errorMsg = "City was not found."
+                return render_template("dashboard.html", username=session["username"], weather=data, error=errorMsg)
         else:
             city_name="Bad Nauheim"
             
