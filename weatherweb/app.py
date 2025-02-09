@@ -52,6 +52,7 @@ class API():
     web_api_key = None
     web_api_endpoint_map_data = None
     web_api_endpoint_raw_data = None
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
     # INIT
     def __init__(self):
@@ -73,7 +74,7 @@ class API():
         load_dotenv(".env")
         return os.getenv("web_api_endpoint_map_data")
     
-    # General
+    # DATETIME
     def getCurrentLocaleTimeAndDate(self, longitude, latitude):
         tf = TimezoneFinder()
         timezone_str = tf.timezone_at(lng=longitude, lat=latitude)
@@ -82,6 +83,27 @@ class API():
         current_date = datetime.now(timezone).strftime("%d/%m/%Y")
         obj_datetime = {"date":current_date, "time":current_time}
         return obj_datetime
+    
+    def getWeekDayName(self, index=0):
+        date = datetime.now()
+        # get day from List with added index
+        index = (date.weekday() + index) % len(self.days)
+        weekday_name = self.days[index]
+        print(weekday_name)
+        return weekday_name
+    
+    def getWeekdaysAsList(self):
+        date = datetime.now()
+        weekDays = []
+        i = 0
+        for day in self.days:
+            print(i)
+            index = (date.weekday() + i) % len(self.days)
+            weekday_name = self.days[index]
+            weekDays.append(weekday_name)
+            i += 1
+            
+        return weekDays
     
     # APICALLS
     def getCurrentWeatherInCityAsJSON(self, city):
@@ -202,19 +224,26 @@ def dashboard():
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             print(data)
             
+            weekDays = fetch_api.getWeekdaysAsList()
+            print(weekDays)
+            
             if data != None:
-                return render_template("dashboard.html", username=session["username"], weather=data)
+                return render_template("dashboard.html", username=session["username"], weather=data, day=weekDays)
             else:
                 data = fetch_api.getDashboardInfoAsJSON(city="Bad Nauheim")
                 errorMsg = "City was not found."
-                return render_template("dashboard.html", username=session["username"], weather=data, error=errorMsg)
+                return render_template("dashboard.html", username=session["username"], weather=data, day=weekDays, error=errorMsg)
         else:
             city_name="Bad Nauheim"
             
             fetch_api = API()
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             print(data)
-            return render_template("dashboard.html", username=session["username"], weather=data)
+            
+            weekDays = fetch_api.getWeekdaysAsList()
+            print(weekDays)
+            
+            return render_template("dashboard.html", username=session["username"], weather=data, day=weekDays)
     else:
         return redirect("login")
 
@@ -234,3 +263,4 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(host='127.0.0.1', port=5000, debug=True)
+    

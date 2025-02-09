@@ -15,6 +15,7 @@
 	--secondary-button-background-hover-color: #ffa500;
     --primary-link-color: blue;
     --primary-error-color: red;
+    --secondary-error-color: darkred;
 }
 
 
@@ -134,7 +135,8 @@ h1 {
 }
 
 .date {
-    font-size: 16px;
+    font-size: 18px;
+    margin-top: -3px;
     color: var(--secondary-text-color);
 }
 
@@ -179,6 +181,7 @@ hr {
 .info-link {
     color: var(--primary-link-color);
     text-decoration: none;
+    align-content: end;
 }
 
 .info-link:hover {
@@ -266,6 +269,11 @@ hr {
 		cursor: pointer;
 		background-color: var(--primary-button-background-hover-color);
 	}
+}
+
+.warningText {
+    margin-bottom: auto;
+    color: var(--secondary-error-color);
 }
 
 .errorMsg {

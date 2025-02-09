@@ -24,4 +24,4 @@ web_api_endpoint_map_data = https://map.openweathermap.org
 
 Schritt 4:
 
-Starten Sie die Python Datei app.py mit dem Befehl im weatherweb Verzeichnis: [ python app.py ]
+Starten Sie die Python Datei app.py, im weatherweb Verzeichnis, mit dem Befehl: [ python app.py ]

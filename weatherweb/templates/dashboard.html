@@ -15,13 +15,13 @@
     <main class="main-content">
         <!-- Wochenübersicht -->
         <section class="weekdays">
-            <div class="weekday-card">Heute</div>
-            <div class="weekday-card">Morgen</div>
-            <div class="weekday-card">Übermorgen</div>
-            <div class="weekday-card">Dienstag</div>
-            <div class="weekday-card">Mittwoch</div>
-            <div class="weekday-card">Donnerstag</div>
-            <div class="weekday-card">Freitag</div>
+            <div class="weekday-card">Today</div>
+            <div class="weekday-card">Tommorrow</div>
+            <div class="weekday-card">{{day[2]}}</div>
+            <div class="weekday-card">{{day[3]}}</div>
+            <div class="weekday-card">{{day[4]}}</div>
+            <div class="weekday-card">{{day[5]}}</div>
+            <div class="weekday-card">{{day[6]}}</div>
         </section>
 
         <!-- Wetterkarte -->
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="weather-footer">
-                <p><strong>Warnung:</strong> FROST!</p>
+                <p class="warningText"><strong>Warnung:</strong> FROST!</p>
                 <a href="#" class="info-link">Mehr Infos!</a>
             </div>
         </section>
