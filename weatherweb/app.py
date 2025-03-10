@@ -5,7 +5,7 @@ import os
 import pytz
 import bcrypt
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from timezonefinder import TimezoneFinder
@@ -75,6 +75,14 @@ class API():
         return os.getenv("web_api_endpoint_map_data")
     
     # DATETIME
+    def getDateAndTimeFromString(self, datetime_str):
+        print(f"Datetime string: {datetime_str}")
+        current_datetime = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
+        current_time = current_datetime.strftime('%H:%M')
+        current_date = current_datetime.strftime('%d/%m/%Y')
+        obj_datetime = {"date":current_date, "time":current_time}
+        return obj_datetime
+    
     def getCurrentLocaleTimeAndDate(self, longitude, latitude):
         tf = TimezoneFinder()
         timezone_str = tf.timezone_at(lng=longitude, lat=latitude)
@@ -84,7 +92,28 @@ class API():
         obj_datetime = {"date":current_date, "time":current_time}
         return obj_datetime
     
+    def isDateTimeTheSame(self, given_datetime, day=0):
+        current_datetime = datetime.now()
+        print(f"day in method: {day}")
+        current_datetime = current_datetime + timedelta(days=int(day))
+        print(f"What?: {given_datetime}")
+        current_datetime = current_datetime.strftime("%d/%m/%Y")
+        print(f"Current date with timedelta added: {current_datetime}")
+        print(f"Given date From API: {given_datetime}")
+        if current_datetime == given_datetime:
+            return True
+        else:
+            return False
+    
     def getWeekDayName(self, index=0):
+        """This function gives you the current day - or + the index and returns it as a string
+        
+        Args:
+            index (int, optional): index for weekday. Defaults to 0, meaning current day
+
+        Returns:
+            str: weekday
+        """
         date = datetime.now()
         # get day from List with added index
         index = (date.weekday() + index) % len(self.days)
@@ -93,11 +122,14 @@ class API():
         return weekday_name
     
     def getWeekdaysAsList(self):
+        """
+        Returns:
+            list<string>: weekdays in a list starting with the current day
+        """
         date = datetime.now()
         weekDays = []
         i = 0
         for day in self.days:
-            print(i)
             index = (date.weekday() + i) % len(self.days)
             weekday_name = self.days[index]
             weekDays.append(weekday_name)
@@ -106,6 +138,16 @@ class API():
         return weekDays
     
     # APICALLS
+    
+    def getWeatherInCityForcastAsJSON(self, city):
+        url = f"{self.web_api_endpoint_raw_data}/data/2.5/forecast?units=metric&q={city}&appid={self.web_api_key}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return data
+        
+        return None
+        
     def getCurrentWeatherInCityAsJSON(self, city):
         url = f"{self.web_api_endpoint_raw_data}/data/2.5/weather?units=metric&q={city}&appid={self.web_api_key}"
         response = requests.get(url)
@@ -144,6 +186,8 @@ class API():
             # timezone
             obj_datetime = self.getCurrentLocaleTimeAndDate(data["coord"]["lon"], data["coord"]["lat"])
             print(f"time: {obj_datetime["time"]}\ndate: {obj_datetime["date"]}")
+            weather_dashboard_obj.update({"lon":str(data["coord"]["lon"])})
+            weather_dashboard_obj.update({"lat":str(data["coord"]["lat"])})
             weather_dashboard_obj.update({"time":str(obj_datetime["time"])})
             weather_dashboard_obj.update({"date":str(obj_datetime["date"])})
             weather_dashboard_obj.update({"timezone":str(data["timezone"])})
@@ -154,6 +198,66 @@ class API():
         else:
             return None
     
+    def getDashboardForecastInfoAsJSON(self, city, days=0):
+        data = self.getWeatherInCityForcastAsJSON(city)
+        if data != None:
+            weather_list = []
+            print("---------------------")
+            counter = 0
+            while counter < int(data["cnt"]):
+                #note: need to make sure it has an index for html
+                print("\n")
+                print(counter)
+                print("\n")
+                
+                weather_dashboard_obj = {}
+                
+                # timezone
+                obj_datetime = self.getDateAndTimeFromString(data["list"][counter]["dt_txt"])
+                print(f"Given From API: {obj_datetime["date"]}")
+                if self.isDateTimeTheSame(given_datetime=obj_datetime["date"], day=days):
+                    weather_dashboard_obj.update({"date":str(obj_datetime["date"])})
+                    weather_dashboard_obj.update({"time":str(obj_datetime["time"])})
+                    
+                    # weather
+                    weather_dashboard_obj.update({"icon":str(data["list"][counter]["weather"][0]["icon"])})
+                    weather_dashboard_obj.update({"main":str(data["list"][counter]["weather"][0]["main"])})
+                    weather_dashboard_obj.update({"description":str(data["list"][counter]["weather"][0]["description"])})
+                    
+                    # main
+                    temp = int(data["list"][counter]["main"]["temp"])
+                    feels_like = int(data["list"][counter]["main"]["feels_like"])
+                    weather_dashboard_obj.update({"temp":str(temp)})
+                    weather_dashboard_obj.update({"feels_like":str(feels_like)})
+                    weather_dashboard_obj.update({"humidity":str(data["list"][counter]["main"]["humidity"])})
+                    
+                    # wind
+                    weather_dashboard_obj.update({"speed":str(data["list"][counter]["wind"]["speed"])})
+                    
+                    # clouds
+                    weather_dashboard_obj.update({"all":str(data["list"][counter]["clouds"]["all"])})
+                    
+                    # sys
+                    weather_dashboard_obj.update({"country":str(data["city"]["country"])})
+                    weather_dashboard_obj.update({"name":str(data["city"]["name"])})
+                    weather_dashboard_obj.update({"lat":str(data["city"]["coord"]["lat"])})
+                    weather_dashboard_obj.update({"lon":str(data["city"]["coord"]["lon"])})
+                    weather_dashboard_obj.update({"sunrise":str(data["city"]["sunrise"])})
+                    weather_dashboard_obj.update({"sunset":str(data["city"]["sunset"])})
+                    
+                    # name
+                    weather_dashboard_obj.update({"name":str(data["city"]["name"])})
+                    weather_dashboard_obj.update({"count":str(counter)})
+                    
+                    
+                    weather_list.append(weather_dashboard_obj)
+                
+                counter+=1    
+                
+            print("---------------------\n")
+            return weather_list
+        
+        return None
 
 ######################################################
 # ROUTES
@@ -161,8 +265,11 @@ class API():
 
 @app.route('/', methods=['GET'])
 def home():
-    """
-    Shows the current Homepage
+    """Shows the current Homepage if logged in, then shows Loginpage
+
+    Returns:
+        Homepage: if logged in
+        Loginpage: if not logged in
     """
     check = True if "username" in session else False
     print(check)
@@ -173,8 +280,11 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """
-    Shows the current Loginpage
+    """Shows the current Loginpage, if not already logged in
+
+    Returns:
+        Homepage: if logged in
+        Loginpage: if not logged in
     """
     if request.method == "POST":
         username = request.form["username"]
@@ -191,8 +301,11 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    """
-    Shows the current Registerpage
+    """Shows the current Registerpage
+
+    Returns:
+        Registerpage: if user doesn't exist
+        Loginpage: if User creation was successfull
     """
     if request.method == "POST":
         username = request.form["username"]
@@ -213,14 +326,26 @@ def register():
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
+    """Shows the current Homepage, with fetched api data to current city
+
+    Returns:
+        Homepage: if logged in
+        Loginpage: if not logged in
+    """
     if "username" in session:
+        
+        fetch_api = API()
+        
         if request.method == "POST":
+            ####################################################
+            # Can't request city, why?
+            # Add variable day with 0 to 5, for the right cards with datetime
             city_name = request.form['city']
+            #city_name = ""
             
             if city_name == None or city_name == "":
                 city_name="Bad Nauheim"
             
-            fetch_api = API()
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             print(data)
             
@@ -228,34 +353,86 @@ def dashboard():
             print(weekDays)
             
             if data != None:
-                return render_template("dashboard.html", username=session["username"], weather=data, day=weekDays)
+                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name)
             else:
                 data = fetch_api.getDashboardInfoAsJSON(city="Bad Nauheim")
                 errorMsg = "City was not found."
-                return render_template("dashboard.html", username=session["username"], weather=data, day=weekDays, error=errorMsg)
-        else:
-            city_name="Bad Nauheim"
+                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, error=errorMsg)
             
-            fetch_api = API()
+        else:
+            city_name = ""
+            
+            if city_name == None or city_name == "":
+                city_name = "Bad Nauheim"
+            
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             print(data)
             
             weekDays = fetch_api.getWeekdaysAsList()
             print(weekDays)
             
-            return render_template("dashboard.html", username=session["username"], weather=data, day=weekDays)
+            if data != None:
+                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name)
+            else:
+                # setting to default city
+                city_name = "Bad Nauheim"
+                
+                data = fetch_api.getDashboardInfoAsJSON(city=city_name)
+                errorMsg = "City was not found."
+                
+                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, error=errorMsg)
     else:
         return redirect("login")
 
+@app.route('/dashboardforecast/<city>/<day>', methods=['GET'])
+def dashboardforecast(city, day):
+    """Shows the current Homepage, with fetched api data for the current day to current city
+
+    Returns:
+        Homepage: if logged in
+        Loginpage: if not logged in
+    """
+    if "username" in session:
+        
+        fetch_api = API()
+        
+        if request.method == "GET":
+            city_name = city
+            
+            if city_name == None or city_name == "":
+                city_name="Bad Nauheim"
+            
+            data = fetch_api.getDashboardForecastInfoAsJSON(city=city_name, days=day)
+            print(data)
+            
+            weekDays = fetch_api.getWeekdaysAsList()
+            print(weekDays)
+            
+            if int(day) == 0:
+                data_today = fetch_api.getDashboardInfoAsJSON(city=city_name)
+                return render_template("dashboardforecast.html", username=session["username"], weatherData=data, weatherDataToday=data_today, is_today=True, day=weekDays, city=city_name)
+            else:
+                return render_template("dashboardforecast.html", username=session["username"], weatherData=data, day=weekDays, city=city_name)
+    else:
+        return redirect("login")
+
+#########################################################################
+# What is this for?
 @app.route('/getusers', methods=['GET'])
 def get_users():
     """
     Shows all users in a json
     """
     return db.getUsers(), 201, {'ContentType':'application/json'}
+#########################################################################
 
 @app.route('/logout', methods=['GET'])
 def logout():
+    """Logs the user out of the site
+
+    Returns:
+        Loginpage: Normally
+    """
     session.pop("username", None)
     return redirect(url_for("login"))
 

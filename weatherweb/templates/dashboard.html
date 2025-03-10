@@ -13,42 +13,58 @@
     </header>
 
     <main class="main-content">
-        <!-- Wochenübersicht -->
+        <!-- error message-->
+        <p class="errorMsg">{{error}}</p>
+        
+        <!-- weekdays -->
         <section class="weekdays">
-            <div class="weekday-card">Today</div>
-            <div class="weekday-card">Tommorrow</div>
-            <div class="weekday-card">{{day[2]}}</div>
-            <div class="weekday-card">{{day[3]}}</div>
-            <div class="weekday-card">{{day[4]}}</div>
-            <div class="weekday-card">{{day[5]}}</div>
-            <div class="weekday-card">{{day[6]}}</div>
+            <form action="{{ url_for('dashboardforecast', city=city, day=0) }}" method="get">
+                <button class="weekday-card">Today</button>
+            </form>
+            <form action="{{ url_for('dashboardforecast', city=city, day=1) }}" method="get">
+            <button class="weekday-card">Tommorrow</button>
+            </form>
+            <form action="{{ url_for('dashboardforecast', city=city, day=2) }}" method="get">
+            <button class="weekday-card">{{day[2]}}</button>
+            </form>
+            <form action="{{ url_for('dashboardforecast', city=city, day=3) }}" method="get">
+            <button class="weekday-card">{{day[3]}}</button>
+            </form>
+            <form action="{{ url_for('dashboardforecast', city=city, day=4) }}" method="get">
+            <button class="weekday-card">{{day[4]}}</button>
+            </form>
+            <form action="{{ url_for('dashboardforecast', city=city, day=5) }}" method="get">
+            <button class="weekday-card">{{day[5]}}</button>
+            </form>
         </section>
 
-        <!-- Wetterkarte -->
+        <!-- weathercard/weathercards -->
         <section class="weather-card">
             <div class="weather-header">
-                <p class="city-info">{{ weather["name"] }}, {{ weather["country"] }} - {{weather["time"]}} Uhr</p>
-                <p class="date">{{weather["date"]}}</p>
+                <p class="city-info">{{ weatherData["name"] }}, {{ weatherData["country"] }} - {{weatherData["time"]}} Uhr</p>
+                <p class="date">{{weatherData["date"]}}</p>
             </div>
             <div class="weather-main">
                 <div class="temperature">
-                    <p class="temp-value">{{ weather["temp"] }}°</p>
-                    <p class="weather-description">{{ weather["description"] }}</p>
-                    <p class="feels-like">Feels like: {{ weather["feels_like"] }}°</p>
+                    <p class="temp-value">{{ weatherData["temp"] }}°</p>
+                    <p class="weather-description">{{ weatherData["description"] }}</p>
+                    <p class="feels-like">Feels like: {{ weatherData["feels_like"] }}°</p>
                 </div>
                 <div class="weather-icon">
-                    <img src="https://openweathermap.org/img/w/{{ weather["icon"] }}.png" alt="current weather icon">
+                    <img src="https://openweathermap.org/img/w/{{ weatherData["icon"] }}.png" alt="current weather icon">
                 </div>
             </div>
+            <!--
             <div class="weather-footer">
                 <p class="warningText"><strong>Warnung:</strong> FROST!</p>
                 <a href="#" class="info-link">Mehr Infos!</a>
             </div>
+            -->
         </section>
         <hr>
-        <p class="errorMsg">{{error}}</p>
     </main>
 
+    <!-- logout/footer -->
     <footer class="footer">
         <a href="{{url_for('logout')}}" class="logout-link">Logout here</a>
     </footer>

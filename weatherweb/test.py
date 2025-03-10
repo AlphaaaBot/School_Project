@@ -1,21 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Create a datetime object
+#date = datetime.now().strftime("%d/%m/%Y")
 date = datetime.now()
 
-# Define a list of weekday names
-days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+print(date.strftime("%d/%m/%Y"))
 
-# Get the weekday name
-print(f"Day number: {date.weekday()}")
+date = date + timedelta(days=4)
 
-weekDays = []
-i = 0
-for day in days:
-    print(i)
-    index = (date.weekday() + i) % len(days)
-    weekday_name = days[index]
-    weekDays.append(weekday_name)
-    i += 1
-
-print(weekDays)
+print(date.strftime("%d/%m/%Y"))
