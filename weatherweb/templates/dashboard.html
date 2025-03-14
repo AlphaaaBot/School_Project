@@ -64,6 +64,46 @@
         <hr>
     </main>
 
+    <!-- ['temp', 'cloud', 'wind', 'pressure', 'precipitation'] -->
+
+    <!-- Heatmap -->
+    <div class="map">
+        <h1>Temperature</h1>
+        <iframe src="/static/maps/tempmap.html" width="1200px" height="500px"></iframe>
+    </div>
+
+    <hr>
+
+    <!-- Cloud -->
+    <div class="map">
+        <h1>Cloud</h1>
+        <iframe src="/static/maps/cloudmap.html" width="1200px" height="500px"></iframe>
+    </div>
+
+    <hr>
+
+    <!-- Cloud -->
+    <div class="map">
+        <h1>Wind</h1>
+        <iframe src="/static/maps/windmap.html" width="1200px" height="500px"></iframe>
+    </div>
+
+    <hr>
+
+    <!-- Cloud -->
+    <div class="map">
+        <h1>Sea level Pressure</h1>
+        <iframe src="/static/maps/pressuremap.html" width="1200px" height="500px"></iframe>
+    </div>
+
+    <hr>
+
+    <!-- Cloud -->
+    <div class="map">
+        <h1>Precipitation</h1>
+        <iframe src="/static/maps/precipitationmap.html" width="1200px" height="500px"></iframe>
+    </div>
+
     <!-- logout/footer -->
     <footer class="footer">
         <a href="{{url_for('logout')}}" class="logout-link">Logout here</a>

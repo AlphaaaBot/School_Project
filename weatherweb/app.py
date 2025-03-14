@@ -4,6 +4,7 @@
 import os
 import pytz
 import bcrypt
+import folium
 import requests
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
@@ -138,6 +139,45 @@ class API():
         return weekDays
     
     # APICALLS
+    
+    def saveTilesMap(self, city_lat, city_lon, layer_name):
+        m = folium.Map(location=[city_lat, city_lon], zoom_start=5)
+        
+        attr_name = 'OpenWeatherMap'
+        folium_name = None
+        
+        # OpenWeatherMap Tile Layer
+        match layer_name:
+            case 'temp':
+                tiles_url = f'{self.web_api_endpoint_map_data}/temp_new/{{z}}/{{x}}/{{y}}.png?appid={self.web_api_key}'
+                folium_name = "Weather Temperature"
+            case 'cloud':
+                tiles_url = f'{self.web_api_endpoint_map_data}/clouds_new/{{z}}/{{x}}/{{y}}.png?appid={self.web_api_key}'
+                folium_name = "Weather Cloud"
+            case 'wind':
+                tiles_url = f'{self.web_api_endpoint_map_data}/wind_new/{{z}}/{{x}}/{{y}}.png?appid={self.web_api_key}'
+                folium_name = "Weather Wind"
+            case 'pressure':
+                tiles_url = f'{self.web_api_endpoint_map_data}/pressure_new/{{z}}/{{x}}/{{y}}.png?appid={self.web_api_key}'
+                folium_name = "Weather Pressure"
+            case 'precipitation':
+                tiles_url = f'{self.web_api_endpoint_map_data}/precipitation_new/{{z}}/{{x}}/{{y}}.png?appid={self.web_api_key}'
+                folium_name = "Weather Precipitation"
+            
+        folium.TileLayer(
+            tiles=tiles_url,
+            attr=attr_name,
+            name=folium_name
+        ).add_to(m)
+        
+        save_name = f"./static/maps/{layer_name}map.html"
+        m.save(save_name)
+        
+    def saveAllTilesMapsAsHtml(self, city_lat, city_lon):
+        map_list = ['temp', 'cloud', 'wind', 'pressure', 'precipitation']
+        
+        for layer_name in map_list:
+            self.saveTilesMap(city_lat=city_lat, city_lon=city_lon, layer_name=layer_name)
     
     def getWeatherInCityForcastAsJSON(self, city):
         url = f"{self.web_api_endpoint_raw_data}/data/2.5/forecast?units=metric&q={city}&appid={self.web_api_key}"
@@ -349,6 +389,9 @@ def dashboard():
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             print(data)
             
+            fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
+            print("saved map html")
+            
             weekDays = fetch_api.getWeekdaysAsList()
             print(weekDays)
             
@@ -357,6 +400,10 @@ def dashboard():
             else:
                 data = fetch_api.getDashboardInfoAsJSON(city="Bad Nauheim")
                 errorMsg = "City was not found."
+                
+                fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
+                print("saved map html")
+
                 return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, error=errorMsg)
             
         else:
@@ -367,6 +414,9 @@ def dashboard():
             
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             print(data)
+            
+            fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
+            print("saved map html")
             
             weekDays = fetch_api.getWeekdaysAsList()
             print(weekDays)
@@ -379,6 +429,9 @@ def dashboard():
                 
                 data = fetch_api.getDashboardInfoAsJSON(city=city_name)
                 errorMsg = "City was not found."
+                
+                fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
+                print("saved map html")
                 
                 return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, error=errorMsg)
     else:
