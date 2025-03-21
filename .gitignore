@@ -177,5 +177,6 @@ pyrightconfig.json
 
 _testing/
 .idea/
+weatherweb/static/maps/
 
 # End of https://www.toptal.com/developers/gitignore/api/python
