@@ -51,8 +51,16 @@
                         <p class="weather-description">{{ weatherDataToday["description"] }}</p>
                         <p class="feels-like">Feels like: {{ weatherDataToday["feels_like"] }}°</p>
                     </div>
+                    <!-- ONLINE ICONS -->
+                    <!--
                     <div class="weather-icon">
                         <img src="https://openweathermap.org/img/w/{{ weatherDataToday["icon"] }}.png" alt="current weather icon">
+                    </div>
+                    -->
+
+                    <!-- LOCAL ICONS -->
+                    <div class="weather-icon">
+                        <img src="/static/icons/{{weatherDataToday["icon"]}}.png" alt="current weather icon">
                     </div>
                 </div>
                 <!--
@@ -78,8 +86,16 @@
                         <p class="weather-description">{{ weather["description"] }}</p>
                         <p class="feels-like">Feels like: {{ weather["feels_like"] }}°</p>
                     </div>
+                    <!-- ONLINE ICONS -->
+                    <!--
                     <div class="weather-icon">
                         <img src="https://openweathermap.org/img/w/{{ weather["icon"] }}.png" alt="current weather icon">
+                    </div>
+                    -->
+
+                    <!-- LOCAL ICONS -->
+                    <div class="weather-icon">
+                        <img src="/static/icons/{{weather["icon"]}}.png" alt="current weather icon">
                     </div>
                 </div>
                 <!--

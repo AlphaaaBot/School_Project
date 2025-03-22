@@ -376,18 +376,22 @@ def dashboard():
         
         fetch_api = API()
         
+        weather_maps = [
+            {"title": "Temperature", "url": "/static/maps/tempmap.html"},
+            {"title": "Cloud Coverage", "url": "/static/maps/cloudmap.html"},
+            {"title": "Wind", "url": "/static/maps/windmap.html"},
+            {"title": "Sea Level Pressure", "url": "/static/maps/pressuremap.html"},
+            {"title": "Precipitation", "url": "/static/maps/precipitationmap.html"},
+        ]
+        
         if request.method == "POST":
-            ####################################################
-            # Can't request city, why?
-            # Add variable day with 0 to 5, for the right cards with datetime
             city_name = request.form['city']
-            #city_name = ""
-            
-            if city_name == None or city_name == "":
-                city_name="Bad Nauheim"
             
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
-            print(data)
+            
+            if data == None:
+                city_name="Bad Nauheim"
+                data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             
             fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
             print("saved map html")
@@ -396,7 +400,7 @@ def dashboard():
             print(weekDays)
             
             if data != None:
-                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name)
+                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, weather_maps=weather_maps)
             else:
                 data = fetch_api.getDashboardInfoAsJSON(city="Bad Nauheim")
                 errorMsg = "City was not found."
@@ -404,7 +408,7 @@ def dashboard():
                 fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
                 print("saved map html")
 
-                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, error=errorMsg)
+                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, weather_maps=weather_maps, error=errorMsg)
             
         else:
             city_name = ""
@@ -422,7 +426,7 @@ def dashboard():
             print(weekDays)
             
             if data != None:
-                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name)
+                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, weather_maps=weather_maps)
             else:
                 # setting to default city
                 city_name = "Bad Nauheim"
@@ -433,7 +437,7 @@ def dashboard():
                 fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
                 print("saved map html")
                 
-                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, error=errorMsg)
+                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, weather_maps=weather_maps, error=errorMsg)
     else:
         return redirect("login")
 

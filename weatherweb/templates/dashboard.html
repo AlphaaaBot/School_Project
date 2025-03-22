@@ -50,8 +50,16 @@
                     <p class="weather-description">{{ weatherData["description"] }}</p>
                     <p class="feels-like">Feels like: {{ weatherData["feels_like"] }}°</p>
                 </div>
+                <!-- ONLINE ICONS -->
+                <!-- 
                 <div class="weather-icon">
                     <img src="https://openweathermap.org/img/w/{{ weatherData["icon"] }}.png" alt="current weather icon">
+                </div>
+                -->
+
+                <!-- LOCAL ICONS -->
+                <div class="weather-icon">
+                    <img src="/static/icons/{{weatherData["icon"]}}.png" alt="current weather info">
                 </div>
             </div>
             <!--
@@ -64,45 +72,19 @@
         <hr>
     </main>
 
-    <!-- ['temp', 'cloud', 'wind', 'pressure', 'precipitation'] -->
+    <section class="weather-info">
+        <h2 style="text-align:center;">Weather Maps</h2>
+        <div class="map-container">
+            {% for map in weather_maps %}
+            <div class="map-box">
+                <h3>{{ map.title }}</h3>
+                <iframe src="{{ map.url }}"></iframe>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
 
-    <!-- Heatmap -->
-    <div class="map">
-        <h1>Temperature</h1>
-        <iframe src="/static/maps/tempmap.html" width="1200px" height="500px"></iframe>
-    </div>
-
-    <hr>
-
-    <!-- Cloud -->
-    <div class="map">
-        <h1>Cloud</h1>
-        <iframe src="/static/maps/cloudmap.html" width="1200px" height="500px"></iframe>
-    </div>
-
-    <hr>
-
-    <!-- Cloud -->
-    <div class="map">
-        <h1>Wind</h1>
-        <iframe src="/static/maps/windmap.html" width="1200px" height="500px"></iframe>
-    </div>
-
-    <hr>
-
-    <!-- Cloud -->
-    <div class="map">
-        <h1>Sea level Pressure</h1>
-        <iframe src="/static/maps/pressuremap.html" width="1200px" height="500px"></iframe>
-    </div>
-
-    <hr>
-
-    <!-- Cloud -->
-    <div class="map">
-        <h1>Precipitation</h1>
-        <iframe src="/static/maps/precipitationmap.html" width="1200px" height="500px"></iframe>
-    </div>
+    <div>test</div>
 
     <!-- logout/footer -->
     <footer class="footer">

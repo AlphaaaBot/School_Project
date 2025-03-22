@@ -2,20 +2,20 @@
 
 /*Variables*/
 :root {
-    --primary-body-color: linear-gradient(to bottom, #eef2f3, #d6d8db);
-	--secondary-body-color: #b3b3b3;
-	--primary-text-color: #333;
-	--secondary-text-color: white;
-	--primary-card-color: #919191;
-	--primary-label-color: #555;
-	--primary-button-text-color: black;
+    --primary-body-color: #e0e0e0;
+    --secondary-body-color: #f0f0f0;
+    --primary-text-color: #222;
+    --secondary-text-color: #fff;
+    --primary-card-color: #ffffff;
+    --primary-label-color: #555;
+    --primary-button-text-color: #fff;
     --primary-button-background-color: #4CAF50;
-	--primary-button-background-hover-color: #1c5c1f;
-	--secondary-button-background-color: #ffcc00;
-	--secondary-button-background-hover-color: #ffa500;
-    --primary-link-color: blue;
-    --primary-error-color: red;
-    --secondary-error-color: darkred;
+    --primary-button-background-hover-color: #388E3C;
+    --secondary-button-background-color: #ffcc00;
+    --secondary-button-background-hover-color: #e6a500;
+    --primary-link-color: #0073e6;
+    --primary-error-color: #d32f2f;
+    --secondary-error-color: #b71c1c;
 }
 
 
@@ -24,31 +24,46 @@
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: var(--secondary-body-color);
-    color: var(--secondary-text-color);
+    background: var(--primary-body-color);
+    color: var(--primary-text-color);
 }
 
 h1 {
     font-size: 36px;
     margin: 0;
+    font-weight: bold;
 }
 
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 .link {
     text-decoration: none;
     color: var(--primary-link-color);
+    font-weight: bold;
+    transition: color 0.3s ease;
 }
 
-.highlight {
-    color: var(--secondary-text-color);
+.link:hover {
+    color: darkblue;
+    text-decoration: underline;
 }
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
+
+/* ? */
+.highlight {
+    color: var(--secondary-button-background-color);
+}
+/* ? */
 
 /* Header */
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 .header {
     text-align: center;
     padding: 20px;
     background: var(--primary-button-background-color);
     color: var(--secondary-text-color);
+    border-bottom: 4px solid var(--primary-button-background-hover-color);
 }
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
 .search-container {
     margin-top: 15px;
@@ -58,34 +73,44 @@ h1 {
 }
 
 #city {
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
-    border-radius: 5px;
-    border-style: groove;
-    width: 525px;
+    border-radius: 8px;
+    border: 2px solid var(--primary-text-color); /* maybe */
+    width: 500px;
+    background: var(--secondary-text-color);
+    color: var(--primary-text-color);
+    transition: border 0.3s ease;
+}
+
+#city:focus {
+    border: 2px solid var(--primary-text-color); /* maybe */
+    outline: none;
 }
 
 .button_search {
-    padding: 10px 20px;
+    padding: 12px 20px;
     font-size: 16px;
     background: var(--secondary-button-background-color);
-	color: var(--secondary-text-color);
-    border-radius: 7px;
+    border: 2px solid var(--primary-text-color); /* maybe */
+    color: var(--secondary-text-color);
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.1s ease;
 }
 
 .button_search:hover {
-    transform: scale(1.1);
     background: var(--secondary-button-background-hover-color);
+    border: 2px solid var(--primary-text-color); /* maybe */
+    transform: scale(1.02);
 }
 
-/* Hauptinhalt */
+/* ? */
 .main-content {
     padding: 20px;
 }
+/* ? */
 
-/* Wochenübersicht */
 .weekdays {
     display: flex;
     gap: 15px;
@@ -97,32 +122,29 @@ h1 {
 .weekday-card {
     padding: 15px 20px;
     background: var(--primary-button-background-color);
+    border: 2px solid var(--primary-text-color); /* maybe */
     color: var(--secondary-text-color);
     border-radius: 10px;
-    border-style: groove;
     text-align: center;
-    flex: 1;
-    min-width: 120px;
-    max-width: 150px;
-    font-size: 16px;
     cursor: pointer;
-    transition: transform 0.2s;
+    font-weight: bold;
+    transition: all 0.1s ease;
 }
 
 .weekday-card:hover {
-    transform: scale(1.1);
     background: var(--primary-button-background-hover-color);
+    border: 2px solid var(--primary-text-color); /* maybe */
+    transform: scale(1.05);
 }
 
-/* Wetterkarte */
 .weather-card {
     background: var(--primary-card-color);
     padding: 20px;
-    border-radius: 10px;
-    border-style: groove;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    border: 2px solid var(--primary-button-background-color);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     max-width: 800px;
-    margin: 0 auto 20px;
+    margin: 20px auto;
 }
 
 .weather-header {
@@ -132,45 +154,51 @@ h1 {
 }
 
 .city-info {
-    font-size: 18px;
-    margin: 0;
-    color: var(--secondary-text-color);
+    font-size: 20px;
+    font-weight: bold;
 }
 
+/* ? */
 .date {
-    font-size: 18px;
-    margin-top: -3px;
-    color: var(--secondary-text-color);
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary-text-color);
 }
+/* ? */
 
 .weather-main {
     display: flex;
     justify-content: space-between;
     align-items: center;
-	color: var(--secondary-text-color);
+	color: var(--primary-text-color);
 }
 
+/* ? */
 .temperature {
     text-align: left;
 }
+/* ? */
 
 .temp-value {
-    padding-bottom: 20px;
-    font-size: 48px;
+    font-size: 50px;
+    font-weight: bold;
     margin: 0;
+    color: var(--primary-text-color);
 }
 
 .weather-description,
 .feels-like {
     font-size: 16px;
     margin: 5px 0;
+    font-weight: bold;
 }
 
 .weather-icon img {
-    width: 150px;
-    height: 150px;
+    width: 130px;
+    height: 120px;
 }
 
+/* ? */
 .weather-footer {
     display: flex;
     justify-content: space-between;
@@ -191,8 +219,8 @@ hr {
 .info-link:hover {
     text-decoration: underline;
 }
+/* ? */
 
-/* Footer */
 .footer {
     text-align: center;
     padding: 10px;
@@ -201,8 +229,11 @@ hr {
     position: fixed;
     bottom: 0;
     min-width: -webkit-fill-available;
+    font-weight: bold;
+    border-top: 3px solid var(--primary-button-background-hover-color); /* maybe */
 }
 
+/* ? */
 .logout-link {
     color: var(--secondary-text-color);
     text-decoration: none;
@@ -211,21 +242,20 @@ hr {
 .logout-link:hover {
     text-decoration: underline;
 }
+/* ? */
 
 /*LOGIN/REGISTER*/
 .body_login_register {
     display: flex;
-	color: var(--secondary-text-color);
-	/*color: #e8e6e3;*/
     align-items: center;
     justify-content: center;
     font-family: sans-serif;
-    line-height: 1.5;
-    background-color: var(--primary-body-color);
+    background-color: var(--primary-body-color); /* maybe */
     flex-direction: column;
     margin: 0;
 }
 
+/* ? */
 .label {
     display: block;
     width: 100%;
@@ -235,6 +265,7 @@ hr {
     color: var(--secondary-text-color);
     font-weight: bold;
 }
+/* ? */
 
 .input {
     display: block;
@@ -242,19 +273,26 @@ hr {
     margin-bottom: 15px;
     padding: 10px;
     box-sizing: border-box;
-    border: 1px solid #ddd;
+    border: 2px solid var(--primary-label-color);
     border-radius: 5px;
     background: var(--secondary-text-color);
     color: var(--primary-text-color);
+    font-size: 16px;
+    transition: border 0.3s ease;
+}
+
+.input:focus {
+    border: 2px solid var(--primary-text-color); /* maybe */
+    outline: none;
 }
 
 .main_login {
-    background-color: var(--primary-card-color);
+    background: var(--primary-card-color);
     border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    padding: 10px 20px;
-    transition: transform 0.2s;
-    width: 500px;
+    border: 2px solid var(--primary-button-background-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    padding: 20px 30px;
+    width: 450px;
     text-align: center;
 }
 
@@ -263,16 +301,19 @@ hr {
     border-radius: 10px;
     margin-top: 15px;
     margin-bottom: 15px;
-    border: none;
+    border: 2px solid var(--primary-text-color); /* maybe */
     color: var(--secondary-text-color);
     cursor: pointer;
     background-color:var(--primary-button-background-color);
     width: 100%;
     font-size: 16px;
-	&:hover {
-		cursor: pointer;
-		background-color: var(--primary-button-background-hover-color);
-	}
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+#btn_submit:hover {
+    background: var(--primary-button-background-hover-color);
+    transform: scale(1.02);
 }
 
 .warningText {
@@ -283,8 +324,53 @@ hr {
 .errorMsg {
     color: var(--primary-error-color);
     text-align: center;
+    font-weight: bold;
 }
 
-.map {
-    justify-items: center;
+/* STOP */
+
+/* Container für alle Maps */
+.map-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Einzelne Karten für Maps */
+.map-box {
+    background: var(--primary-card-color);
+    border: 2px solid var(--primary-button-background-color);
+    color: var(--secondary-body-color);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px var(--primary-text-color);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.map-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px var(--primary-text-color);
+    h3{
+        color: var(--secondary-button-background-hover-color);
+    }
+}
+
+/* Karten-Titel */
+.map-box h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: var(--secondary-button-background-color);
+}
+
+/* Iframes für Maps */
+.map-box iframe {
+    width: 100%;
+    height: 300px;
+    border-radius: 8px;
+    border: 2px solid var(--primary-button-background-color);
 }
