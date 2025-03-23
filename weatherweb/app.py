@@ -385,11 +385,14 @@ def dashboard():
         ]
         
         if request.method == "POST":
+            current_error = False
+            
             city_name = request.form['city']
             
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             
             if data == None:
+                current_error = True
                 city_name="Bad Nauheim"
                 data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             
@@ -399,7 +402,7 @@ def dashboard():
             weekDays = fetch_api.getWeekdaysAsList()
             print(weekDays)
             
-            if data != None:
+            if data != None and not current_error:
                 return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, weather_maps=weather_maps)
             else:
                 data = fetch_api.getDashboardInfoAsJSON(city="Bad Nauheim")

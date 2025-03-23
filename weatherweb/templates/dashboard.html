@@ -12,6 +12,9 @@
         </div>
     </header>
 
+    <!-- error message-->
+    <p class="errorMsg">{{error}}</p>
+
     <!-- Hidden Checkbox to control sidebar toggle -->
     <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-checkbox">
 
@@ -31,10 +34,7 @@
         &#9776; <!-- Hamburger Icon -->
     </label>
 
-    <main class="main-content">
-        <!-- error message-->
-        <p class="errorMsg">{{error}}</p>
-        
+    <main class="main-content">        
         <!-- weekdays -->
         <section class="weekdays">
             <form action="{{ url_for('dashboardforecast', city=city, day=0) }}" method="get">
