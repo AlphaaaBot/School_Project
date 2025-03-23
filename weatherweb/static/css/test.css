@@ -61,7 +61,7 @@ h1 {
     padding: 20px;
     background: var(--primary-button-background-color);
     color: var(--secondary-text-color);
-    border-bottom: 4px solid var(--primary-button-background-hover-color);
+    border-bottom: 3px solid var(--primary-button-background-hover-color);
 }
 /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 
@@ -388,4 +388,75 @@ hr {
     height: 400px;
     border-radius: 8px;
     border: 2px solid var(--primary-button-background-color);
+}
+
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.a-sidebar {
+    padding-left: 5px;
+}
+
+.custom-sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: var(--primary-button-text-color);
+    border-right: 3px solid var(--primary-button-background-hover-color);
+    color: var(--primary-button-text-color);
+    transition: left 0.6s ease;
+    padding-top: 60px;
+}
+
+#sidebar-toggle:checked ~ .custom-sidebar {
+    left: 0;
+}
+
+#sidebar-toggle:checked ~ .sidebar-toggle-label {
+    position: fixed;
+}
+
+.custom-sidebar nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.custom-sidebar nav ul li {
+    text-align: left;
+    padding: 15px;
+    transition: background 0.3s ease;
+    color: var(--primary-text-color);
+}
+
+.custom-sidebar nav ul li a {
+    text-decoration: none;
+    display: block;
+    font-size: 18px;
+}
+
+.custom-sidebar nav ul li:hover {
+    background-color: var(--primary-button-background-color);
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle-label {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 30px;
+    background-color: transparent;
+    border: none;
+    color: var(--primary-text-color);
+    cursor: pointer;
+    z-index: 10;
+}
+
+.sidebar-toggle-checkbox {
+    display: none; /* Hide the checkbox itself */
 }

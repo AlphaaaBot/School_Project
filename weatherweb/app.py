@@ -481,7 +481,13 @@ def get_users():
     Shows all users in a json
     """
     return db.getUsers(), 201, {'ContentType':'application/json'}
+
 #########################################################################
+
+@app.route('/settings', methods=['GET'])
+def settings():
+    return redirect(url_for("settings"))
+
 
 @app.route('/logout', methods=['GET'])
 def logout():
