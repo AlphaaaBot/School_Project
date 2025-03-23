@@ -393,13 +393,6 @@ hr {
     border: 2px solid var(--primary-button-background-color);
 }
 
-/* Basic Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 .a-sidebar {
     padding-left: 5px;
 }
