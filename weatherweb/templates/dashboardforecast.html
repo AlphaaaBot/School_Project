@@ -6,7 +6,7 @@
         <h1>Weather<span class="highlight">WEB</span></h1>
         <div class="search-container">
             <form action="/dashboard" method="POST">
-                <input type="text" id="city" name="city" placeholder="Enter a city" required>
+                <input type="text" id="city" name="city" placeholder="Enter a city" value="{{ city }}" required>
                 <button id="search" name="test" class="button_search" type="submit">Search</button>
             </form>
         </div>
@@ -19,22 +19,46 @@
         <!-- weekdays -->
         <section class="weekdays">
             <form action="{{ url_for('dashboardforecast', city=city, day=0) }}" method="get">
-                <button class="weekday-card">Today</button>
+                {% if button_pressed == "0" %}
+                    <button style="text-decoration: underline;" class="weekday-card">Today</button>
+                {% else %}
+                    <button class="weekday-card">Today</button>
+                {% endif %}
             </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=1) }}" method="get">
-            <button class="weekday-card">Tommorrow</button>
+                {% if button_pressed == "1" %}
+                    <button style="text-decoration: underline;" class="weekday-card">Tommorrow</button>
+                {% else %}
+                    <button class="weekday-card">Tommorrow</button>
+                {% endif %}
             </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=2) }}" method="get">
-            <button class="weekday-card">{{day[2]}}</button>
+                {% if button_pressed == "2" %}
+                    <button style="text-decoration: underline;" class="weekday-card">{{day[2]}}</button>
+                {% else %}
+                    <button class="weekday-card">{{day[2]}}</button>
+                {% endif %}
             </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=3) }}" method="get">
-            <button class="weekday-card">{{day[3]}}</button>
+                {% if button_pressed == "3" %}
+                    <button style="text-decoration: underline;" class="weekday-card">{{day[3]}}</button>
+                {% else %}
+                    <button class="weekday-card">{{day[3]}}</button>
+                {% endif %}
             </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=4) }}" method="get">
-            <button class="weekday-card">{{day[4]}}</button>
+                {% if button_pressed == "4" %}
+                    <button style="text-decoration: underline;" class="weekday-card">{{day[4]}}</button>
+                {% else %}
+                    <button class="weekday-card">{{day[4]}}</button>
+                {% endif %}
             </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=5) }}" method="get">
-            <button class="weekday-card">{{day[5]}}</button>
+                {% if button_pressed == "5" %}
+                    <button style="text-decoration: underline;" class="weekday-card">{{day[5]}}</button>
+                {% else %}
+                    <button class="weekday-card">{{day[5]}}</button>
+                {% endif %}
             </form>
         </section>
 
@@ -107,7 +131,6 @@
             </section>
             <hr>
         {% endfor %}
-        <hr>
     </main>
 
     <!-- logout/footer -->

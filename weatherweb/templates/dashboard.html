@@ -6,7 +6,7 @@
         <h1>Weather<span class="highlight">WEB</span></h1>
         <div class="search-container">
             <form action="/dashboard" method="POST">
-                <input type="text" id="city" name="city" placeholder="Enter a city" required>
+                <input type="text" id="city" name="city" placeholder="Enter a city" value="{{ city }}" required>
                 <button id="search" name="test" class="button_search" type="submit">Search</button>
             </form>
         </div>
@@ -46,9 +46,9 @@
             </div>
             <div class="weather-main">
                 <div class="temperature">
-                    <p class="temp-value">{{ weatherData["temp"] }}°</p>
+                    <p class="temp-value">{{ weatherData["temp"] }}°C</p>
+                    <p class="feels-like">Feels like: {{ weatherData["feels_like"] }}°C</p>
                     <p class="weather-description">{{ weatherData["description"] }}</p>
-                    <p class="feels-like">Feels like: {{ weatherData["feels_like"] }}°</p>
                 </div>
                 <!-- ONLINE ICONS -->
                 <!-- 
@@ -70,6 +70,37 @@
             -->
         </section>
         <hr>
+
+        <div class="row">
+        {% for weather in weatherDataForecast %}
+            <!-- weathercard small/weathercards small -->
+            <section class="weather-card-small">
+                <div class="weather-main-small">
+                    <div class="temperature">
+                        <!-- <p class="date-small">{{weather["time"]}} Uhr</p> -->
+                        <p class="temp-value-small">{{ weather["temp"] }}°C</p>
+                        <p class="feels-like-small">Feels like: {{ weather["feels_like"] }}°C</p>
+                        <p class="weather-description-small">{{ weather["description"] }}</p>
+                    </div>
+                    <!-- ONLINE ICONS -->
+                    <!-- 
+                    <div class="weather-icon">
+                        <img src="https://openweathermap.org/img/w/{{ weatherData["icon"] }}.png" alt="current weather icon">
+                    </div>
+                    -->
+
+                    <!-- LOCAL ICONS -->
+                    <div class="weather-icon-small">
+                        <img src="/static/icons/{{ weather["icon"] }}.png" alt="current weather info">
+                    </div>
+                </div>
+                <p class="date-small">{{weather["date"]}}</p>
+                <div class="weather-footer">
+                    <a href="{{ url_for('dashboardforecast', city=city, day=weather["day"]) }}" class="info-link">More..</a>
+                </div>
+            </section>
+        {% endfor %}
+        </div>
     </main>
 
     <section class="weather-info">

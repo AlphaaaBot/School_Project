@@ -245,7 +245,6 @@ class API():
             print("---------------------")
             counter = 0
             while counter < int(data["cnt"]):
-                #note: need to make sure it has an index for html
                 print("\n")
                 print(counter)
                 print("\n")
@@ -298,6 +297,85 @@ class API():
             return weather_list
         
         return None
+    
+    def getDashboardForecastForOneOfAllDatesInfoAsJSON(self, city):
+        data = self.getWeatherInCityForcastAsJSON(city)
+        if data != None:
+            weather_list = []
+            print("---------------------")
+            counter = 0
+            time_counter = 0
+            days = 1
+            
+            while counter < int(data["cnt"]):
+                print("\n")
+                print(counter)
+                print("\n")
+                
+                weather_dashboard_obj = {}
+                
+                # timezone
+                obj_datetime = self.getDateAndTimeFromString(data["list"][counter]["dt_txt"])
+                print(f"Given From API: {obj_datetime["date"]}")
+                if self.isDateTimeTheSame(given_datetime=obj_datetime["date"], day=days):
+                    if time_counter == 4:
+                        print("YES!")
+                        weather_dashboard_obj.update({"date":str(obj_datetime["date"])})
+                        weather_dashboard_obj.update({"time":str(obj_datetime["time"])})
+                        
+                        # weather
+                        weather_dashboard_obj.update({"icon":str(data["list"][counter]["weather"][0]["icon"])})
+                        weather_dashboard_obj.update({"main":str(data["list"][counter]["weather"][0]["main"])})
+                        weather_dashboard_obj.update({"description":str(data["list"][counter]["weather"][0]["description"])})
+                        
+                        # main
+                        temp = int(data["list"][counter]["main"]["temp"])
+                        feels_like = int(data["list"][counter]["main"]["feels_like"])
+                        weather_dashboard_obj.update({"temp":str(temp)})
+                        weather_dashboard_obj.update({"feels_like":str(feels_like)})
+                        weather_dashboard_obj.update({"humidity":str(data["list"][counter]["main"]["humidity"])})
+                        
+                        # wind
+                        weather_dashboard_obj.update({"speed":str(data["list"][counter]["wind"]["speed"])})
+                        
+                        # clouds
+                        weather_dashboard_obj.update({"all":str(data["list"][counter]["clouds"]["all"])})
+                        
+                        # sys
+                        weather_dashboard_obj.update({"country":str(data["city"]["country"])})
+                        weather_dashboard_obj.update({"name":str(data["city"]["name"])})
+                        weather_dashboard_obj.update({"lat":str(data["city"]["coord"]["lat"])})
+                        weather_dashboard_obj.update({"lon":str(data["city"]["coord"]["lon"])})
+                        weather_dashboard_obj.update({"sunrise":str(data["city"]["sunrise"])})
+                        weather_dashboard_obj.update({"sunset":str(data["city"]["sunset"])})
+                        
+                        # name
+                        weather_dashboard_obj.update({"name":str(data["city"]["name"])})
+                        weather_dashboard_obj.update({"count":str(counter)})
+                        weather_dashboard_obj.update({"day":str(days)})
+                        
+                        
+                        weather_list.append(weather_dashboard_obj)
+                        days += 1
+                        time_counter = 0
+                    else:
+                        time_counter += 1
+                
+                counter+=1
+                
+            print("---------------------\n")
+            return weather_list
+        
+        return None
+    
+    def getGeolocationCity(self):
+        try:
+            url = 'http://ipinfo.io/json'
+            response = requests.get(url)
+            data = response.json()
+            return data["city"]
+        except:
+            return None
 
 ######################################################
 # ROUTES
@@ -388,10 +466,14 @@ def dashboard():
             city_name = request.form['city']
             
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
+            data_forecast = fetch_api.getDashboardForecastForOneOfAllDatesInfoAsJSON(city=city_name)
+            print(data_forecast)
             
             if data == None:
-                city_name="Bad Nauheim"
-                data = fetch_api.getDashboardInfoAsJSON(city=city_name)
+                city_name = fetch_api.getGeolocationCity()
+                if city_name == None:
+                    city_name="Bad Nauheim"
+                    data = fetch_api.getDashboardInfoAsJSON(city=city_name)
             
             fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
             print("saved map html")
@@ -400,7 +482,7 @@ def dashboard():
             print(weekDays)
             
             if data != None:
-                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, weather_maps=weather_maps)
+                return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, city=city_name, weather_maps=weather_maps)
             else:
                 data = fetch_api.getDashboardInfoAsJSON(city="Bad Nauheim")
                 errorMsg = "City was not found."
@@ -408,7 +490,7 @@ def dashboard():
                 fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
                 print("saved map html")
 
-                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, weather_maps=weather_maps, error=errorMsg)
+                return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, city=city_name, weather_maps=weather_maps, error=errorMsg)
             
         else:
             city_name = ""
@@ -417,7 +499,8 @@ def dashboard():
                 city_name = "Bad Nauheim"
             
             data = fetch_api.getDashboardInfoAsJSON(city=city_name)
-            print(data)
+            data_forecast = fetch_api.getDashboardForecastForOneOfAllDatesInfoAsJSON(city=city_name)
+            print(data_forecast)
             
             fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
             print("saved map html")
@@ -426,7 +509,7 @@ def dashboard():
             print(weekDays)
             
             if data != None:
-                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, weather_maps=weather_maps)
+                return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, city=city_name, weather_maps=weather_maps)
             else:
                 # setting to default city
                 city_name = "Bad Nauheim"
@@ -437,7 +520,7 @@ def dashboard():
                 fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
                 print("saved map html")
                 
-                return render_template("dashboard.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, weather_maps=weather_maps, error=errorMsg)
+                return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, city=city_name, weather_maps=weather_maps, error=errorMsg)
     else:
         return redirect("login")
 
@@ -467,9 +550,9 @@ def dashboardforecast(city, day):
             
             if int(day) == 0:
                 data_today = fetch_api.getDashboardInfoAsJSON(city=city_name)
-                return render_template("dashboardforecast.html", username=session["username"], weatherData=data, weatherDataToday=data_today, is_today=True, day=weekDays, city=city_name)
+                return render_template("dashboardforecast.html", username=session["username"], weatherData=data, weatherDataToday=data_today, is_today=True, day=weekDays, city=city_name, button_pressed=day)
             else:
-                return render_template("dashboardforecast.html", username=session["username"], weatherData=data, day=weekDays, city=city_name)
+                return render_template("dashboardforecast.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, button_pressed=day)
     else:
         return redirect("login")
 

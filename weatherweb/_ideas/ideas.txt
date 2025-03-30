@@ -19,3 +19,30 @@ status - datetime
 [row]
 	[column]
 	
+
+
+[Erweiterungen]
+
+Implemented (DONE):
+- Stadtname in der searchbar
+- Farben Hintergrund/Button
+- Wochenbericht
+- Button farblich markieren/Underline
+
+Must have:
+- Home von der Übersicht trennen
+- Geolocation
+
+Nice to have:
+- Bild Stadt/Passendes Wetterbild Hintergrund
+- Settings, Karten anders anordnen oder ausblenden lassen (bools)
+- Sidebar icons fest, wie im Redmine oder Browser
+- Homeseite div onclick
+- Mehr anzeigen / Werte ausklappbar
+- Suchverlauf
+- Favoritenliste (Beschränkte Anzahl)
+
+Probably Drop:
+- für Today, Lokale Zeit beachten (Sommerzeit)
+- language
+- loading html css
