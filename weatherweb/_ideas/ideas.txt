@@ -28,10 +28,11 @@ Implemented (DONE):
 - Farben Hintergrund/Button
 - Wochenbericht
 - Button farblich markieren/Underline
+- Added Guest session
+- Home von der Übersicht trennen
 
 Must have:
-- Home von der Übersicht trennen
-- Geolocation
+- Geolocation [WIP]
 
 Nice to have:
 - Bild Stadt/Passendes Wetterbild Hintergrund

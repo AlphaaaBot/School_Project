@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<body class="body_dashboard">
+    <!-- searchbar/header -->
+    <header class="header">
+        <h1>Weather<span class="highlight">WEB</span></h1>
+        <div class="search-container">
+            <form action="{{ url_for('dashboard_redirect') }}" method="POST">
+                <input type="text" id="city" name="city" placeholder="Enter a city" required>
+                <button id="search" name="test" class="button_search" type="submit">Search</button>
+            </form>
+        </div>
+
+        <p>{{ city }}</p>
+    </header>
+
+    <main>
+        {% if username != "Guest" %}
+            {% for weather in weather_data%}
+            <div class="weather-container">
+                <section class="weather-card">
+                    <div class="weather-header">
+                        <p class="city-info">{{ weather["name"] }}, {{ weather["country"] }} - {{weather["time"]}} Uhr</p>
+                        <p class="date">{{weather["date"]}}</p>
+                    </div>
+            
+                    <div class="weather-main">
+                        <div class="temperature">
+                            <p class="temp-value">{{ weather["temp"] }}°C</p>
+                            <p class="feels-like">Feels like: {{ weather["feels_like"] }}°C</p>
+                            <p class="weather-description">{{ weather["description"] }}</p>
+                        </div>
+            
+                        <div class="weather-icon">
+                            <img src="/static/icons/{{weather["icon"]}}.png" alt="current weather info">
+                        </div>
+                    </div>
+                    <form action="{{url_for('addordeletecity', city=weather["name"], redirect_to="index")}}" method="POST">
+                        <button type="submit" class="favorite-btn">
+                            -
+                        </button>
+                    </form>
+                    <input type="hidden" name="city" value="{{ city }}">
+                </section>
+            </div>           
+            {% endfor %}
+            <div style="padding: 20px;"></div> 
+        {% else %}
+            <div style="justify-self: center;">
+                <p>To see or add favorites and settings, please login.</p>
+                <div style="justify-self: center;">    
+                    <form action="{{url_for('logout')}}" method="GET">
+                        <button class="weekday-card">Login here</button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- logout/footer -->
+    {% if username != "Guest" %}
+        <footer class="footer">
+            <a href="{{url_for('logout')}}" class="logout-link">Logout here</a>
+        </footer>
+    {% endif %}
+</body>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<body class="body_dashboard">
+    <header class="header">
+        <h1>Settings</h1>
+    </header>
+
+    <main class="settings-container">
+        <form action="{{url_for('index')}}", method="POST">
+            <label for="theme">Theme:</label>
+            <select id="theme" name="theme">
+                <option value="light" {% if user.settings.theme == "light" %} selected {% endif %}>Light</option>
+                <option value="dark" {% if user.settings.theme == "dark" %} selected {% endif %}>Dark</option>
+            </select>
+
+            <label for="preferred_units">Preferred Units:</label>
+            <select id="preferred_units" name="preferred_units">
+                <option value="metric" {% if user.settings.preferred_units == "metric" %} selected {% endif %}>Metric (°C, km/h)</option>
+                <option value="imperial" {% if user.settings.preferred_units == "imperial" %} selected {% endif %}>Imperial (°F, mph)</option>
+            </select>
+
+            <button type="submit">Save Settings</button>
+        </form>
+    </main>
+
+    <footer class="footer">
+        <a href="{{ url_for('index') }}">Back to Home</a>
+    </footer>
+</body>
+{% endblock %}

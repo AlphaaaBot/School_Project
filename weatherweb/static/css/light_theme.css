@@ -151,13 +151,21 @@ h1 {
     transform: scale(1.05);
 }
 
+.weather-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
 
 .weather-card {
+    position: relative;
     background: var(--primary-card-color);
     padding: 20px;
     border-radius: 12px;
     border: 2px solid var(--primary-button-background-color);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    width: 700px;
     max-width: 800px;
     margin: 20px auto;
 }
@@ -177,6 +185,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    font-weight: bold;
 }
 
 .city-info {
@@ -202,6 +211,13 @@ h1 {
     flex-direction: row;
     justify-self: center;
     gap: 32px;
+}
+
+.index-row {
+    display: flex;
+    flex-direction: row;
+    justify-self: center;
+    gap: 0px;
 }
 
 .weather-main {
@@ -437,4 +453,58 @@ hr {
     height: 400px;
     border-radius: 8px;
     border: 2px solid var(--primary-button-background-color);
+}
+
+/* SETTINGS */
+
+.settings-container {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background: var(--secondary-text-color);
+    border-radius: 10px;
+}
+
+.settings-container label {
+    display: block;
+    margin-top: 10px;
+}
+
+.settings-container select, .settings-container input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid var(--primary-text-color);
+}
+
+.settings-container button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+    background: var(--primary-button-background-color);
+    color: var(--secondary-text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.settings-container button:hover {
+    background: var(--primary-button-background-hover-color);
+}
+
+/* FAVORITEN-BUTTON */
+.favorite-btn {
+    position: absolute;
+    top: 10px;
+    right: 45%;
+    background: transparent;
+    border: none;
+    font-size: 45px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.2);
 }
