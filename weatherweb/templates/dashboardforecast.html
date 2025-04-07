@@ -13,6 +13,29 @@
         </div>
     </header>
 
+    <!-- Hidden Checkbox to control sidebar toggle -->
+    <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-checkbox">
+
+    <!-- Sidebar -->
+    <div class="custom-sidebar">
+        <nav>
+            <ul>
+                <li><a class="a-sidebar" href="{{url_for('index')}}">🏠 Home</a></li>
+                {% if username != "Guest" %}
+                    <li><a class="a-sidebar" href="{{url_for('settings')}}">⚙️ Settings</a></li>
+                    <li><a class="a-sidebar" href="{{url_for('logout')}}">🔒 Logout</a></li>
+                {% else %}
+                    <li><a class="a-sidebar" href="{{url_for('logout')}}">🔒 Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Sidebar Toggle Button (Hamburger Icon) -->
+    <label for="sidebar-toggle" class="sidebar-toggle-label">
+        &#9776; <!-- Hamburger Icon -->
+    </label>
+
     <main class="main-content">
         <!-- error message-->
         <p class="errorMsg">{{error}}</p>

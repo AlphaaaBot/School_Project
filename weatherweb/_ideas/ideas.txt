@@ -30,6 +30,8 @@ Implemented (DONE):
 - Button farblich markieren/Underline
 - Added Guest session
 - Home von der Übersicht trennen
+- Sidebar added
+- Redirect from weather div
 
 Must have:
 - Geolocation [WIP]

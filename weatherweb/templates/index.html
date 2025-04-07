@@ -11,12 +11,34 @@
                 <button id="search" name="test" class="button_search" type="submit">Search</button>
             </form>
         </div>
-
-        <p>{{ city }}</p>
     </header>
+
+    <!-- Hidden Checkbox to control sidebar toggle -->
+    <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-checkbox">
+
+    <!-- Sidebar -->
+    <div class="custom-sidebar">
+        <nav>
+            <ul>
+                <li><a class="a-sidebar" href="{{url_for('index')}}">🏠 Home</a></li>
+                {% if username != "Guest" %}
+                    <li><a class="a-sidebar" href="{{url_for('settings')}}">⚙️ Settings</a></li>
+                    <li><a class="a-sidebar" href="{{url_for('logout')}}">🔒 Logout</a></li>
+                {% else %}
+                    <li><a class="a-sidebar" href="{{url_for('logout')}}">🔒 Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Sidebar Toggle Button (Hamburger Icon) -->
+    <label for="sidebar-toggle" class="sidebar-toggle-label">
+        &#9776; <!-- Hamburger Icon -->
+    </label>
 
     <main>
         {% if username != "Guest" %}
+        <h2 style="text-align:center; font-size: 40px;">Your favorite cities</h2>
             {% for weather in weather_data%}
             <div class="weather-container">
                 <section class="weather-card">
@@ -42,6 +64,11 @@
                         </button>
                     </form>
                     <input type="hidden" name="city" value="{{ city }}">
+                    <div style="justify-items: anchor-center; padding: 0px;">
+                        <div class="weather-footer">
+                            <a href="{{ url_for('dashboard', city=weather["name"]) }}" class="info-link">More..</a>
+                        </div>
+                    </div>
                 </section>
             </div>           
             {% endfor %}
