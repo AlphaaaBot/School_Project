@@ -10,7 +10,7 @@
     --primary-label-color: #555;
     --primary-button-text-color: #fff;
     --primary-button-background-color: #219ace;
-    --primary-button-background-hover-color: #2697c8;
+    --primary-button-background-hover-color: #0a7aaa;
     --secondary-button-background-color: #ffcc00;
     --secondary-button-background-hover-color: #e6a500;
     --primary-link-color: #0073e6;
@@ -72,6 +72,20 @@ h1 {
     gap: 10px;
 }
 
+.geolocation-button {
+    background: var(--primary-button-background-color);
+    border: 2px solid var(--primary-text-color);
+    border-radius: 8px;
+    font-size: 30px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.geolocation-buton:hover {
+    background: var(--secondary-button-background-hover-color);
+    transform: scale(1.02);
+}
+
 #city {
     padding: 12px;
     font-size: 16px;
@@ -117,11 +131,9 @@ h1 {
     transform: scale(1.02);
 }
 
-/* ? */
 .main-content {
     padding: 20px;
 }
-/* ? */
 
 .weekdays {
     display: flex;
@@ -149,6 +161,12 @@ h1 {
     background: var(--primary-button-background-hover-color);
     border-color: var(--primary-text-color);
     transform: scale(1.05);
+}
+
+.weekday-card-clicked {
+    text-decoration: underline;
+    transform: scale(1.1);
+    background-color: var(--primary-button-background-hover-color);
 }
 
 .weather-container {
@@ -210,7 +228,7 @@ h1 {
     display: flex;
     flex-direction: row;
     justify-self: center;
-    gap: 32px;
+    gap: 5px;
 }
 
 .index-row {
@@ -265,7 +283,7 @@ h1 {
     font-size: 12px;
     margin: 5px 0;
     font-weight: bold;
-    justify-self: center;
+    justify-self: left;
 }
 
 .weather-icon img {
@@ -313,7 +331,6 @@ hr {
     border-top: 3px solid var(--primary-button-background-hover-color); /* maybe */
 }
 
-/* ? */
 .logout-link {
     color: var(--secondary-text-color);
     text-decoration: none;
@@ -322,7 +339,6 @@ hr {
 .logout-link:hover {
     text-decoration: underline;
 }
-/* ? */
 
 /*LOGIN/REGISTER*/
 .body_login_register {
@@ -335,7 +351,6 @@ hr {
     margin: 0;
 }
 
-/* ? */
 .label {
     display: block;
     width: 100%;
@@ -345,7 +360,6 @@ hr {
     color: var(--secondary-text-color);
     font-weight: bold;
 }
-/* ? */
 
 .input {
     display: block;
@@ -493,11 +507,26 @@ hr {
     background: var(--primary-button-background-hover-color);
 }
 
+.row-settings {
+    display: flex;
+    flex-direction: row;
+    padding-left: 20px;
+}
+
+.row-settings label {
+    flex: 1;
+}
+
+.row-settings input[type="checkbox"] {
+    width: 20px;
+    cursor: pointer;
+}
+
 /* FAVORITEN-BUTTON */
 .favorite-btn {
     position: absolute;
-    top: 10px;
-    right: 45%;
+    bottom: 5px;
+    left: 13px;
     background: transparent;
     border: none;
     font-size: 45px;
@@ -574,4 +603,20 @@ hr {
 
 .sidebar-toggle-checkbox {
     display: none; /* Hide the checkbox itself */
+}
+
+/* Stern */
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: gold;
+    cursor: pointer;
+    padding-bottom: 10px;
+    transition: transform 0.2s ease;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.2);
 }

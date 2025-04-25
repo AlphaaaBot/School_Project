@@ -33,20 +33,22 @@ Implemented (DONE):
 - Sidebar added
 - Redirect from weather div
 - preload css
+- Favoritenliste (Beschränkte Anzahl)
+- für Today, Lokale Zeit beachten (Sommerzeit)
+- Geolocation
+- Fix settings redirect to index
+- Fix dashboard seite redirect from dashboardForecast
+- Settings, Karten ausblenden lassen (bools)
 
 Must have:
-- Geolocation [WIP]
+- /
 
 Nice to have:
-- Bild Stadt/Passendes Wetterbild Hintergrund
-- Settings, Karten anders anordnen oder ausblenden lassen (bools)
-- Sidebar icons fest, wie im Redmine oder Browser
-- Homeseite div onclick
 - Mehr anzeigen / Werte ausklappbar
-- Suchverlauf
-- Favoritenliste (Beschränkte Anzahl)
+- Bild Stadt/Passendes Wetterbild Hintergrund
 
 Probably Drop:
-- für Today, Lokale Zeit beachten (Sommerzeit)
 - language
-- loading html css
+- Suchverlauf
+- Sidebar icons fest, wie im Redmine oder Browser
+- Homeseite div onclick

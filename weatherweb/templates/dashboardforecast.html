@@ -6,7 +6,10 @@
     <header class="header">
         <h1>Weather<span class="highlight">WEB</span></h1>
         <div class="search-container">
-            <form action="{{url_for("dashboard_redirect")}}" method="POST">
+            <form action="{{ url_for('dashboardredirect') }}" method="GET">
+                <button id="geo-button" class="geolocation-button" type="submit" title="Use current location">📍</button>
+            </form>
+            <form action="{{url_for("dashboardredirect")}}" method="POST">
                 <input type="text" id="city" name="city" placeholder="Enter a city" value="{{ city }}" required>
                 <button id="search" name="test" class="button_search" type="submit">Search</button>
             </form>
@@ -42,44 +45,47 @@
 
         <!-- weekdays -->
         <section class="weekdays">
+            <form action="{{ url_for('dashboard', city=city) }}" method="get">
+                <button class="weekday-card">Dashboard</button>
+            </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=0) }}" method="get">
                 {% if button_pressed == "0" %}
-                    <button style="text-decoration: underline;" class="weekday-card">Today</button>
+                    <button class="weekday-card weekday-card-clicked">Today</button>
                 {% else %}
                     <button class="weekday-card">Today</button>
                 {% endif %}
             </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=1) }}" method="get">
                 {% if button_pressed == "1" %}
-                    <button style="text-decoration: underline;" class="weekday-card">Tommorrow</button>
+                    <button class="weekday-card weekday-card-clicked">Tommorrow</button>
                 {% else %}
                     <button class="weekday-card">Tommorrow</button>
                 {% endif %}
             </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=2) }}" method="get">
                 {% if button_pressed == "2" %}
-                    <button style="text-decoration: underline;" class="weekday-card">{{day[2]}}</button>
+                    <button class="weekday-card weekday-card-clicked">{{day[2]}}</button>
                 {% else %}
                     <button class="weekday-card">{{day[2]}}</button>
                 {% endif %}
             </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=3) }}" method="get">
                 {% if button_pressed == "3" %}
-                    <button style="text-decoration: underline;" class="weekday-card">{{day[3]}}</button>
+                    <button class="weekday-card weekday-card-clicked">{{day[3]}}</button>
                 {% else %}
                     <button class="weekday-card">{{day[3]}}</button>
                 {% endif %}
             </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=4) }}" method="get">
                 {% if button_pressed == "4" %}
-                    <button style="text-decoration: underline;" class="weekday-card">{{day[4]}}</button>
+                    <button class="weekday-card weekday-card-clicked">{{day[4]}}</button>
                 {% else %}
                     <button class="weekday-card">{{day[4]}}</button>
                 {% endif %}
             </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=5) }}" method="get">
                 {% if button_pressed == "5" %}
-                    <button style="text-decoration: underline;" class="weekday-card">{{day[5]}}</button>
+                    <button class="weekday-card weekday-card-clicked">{{day[5]}}</button>
                 {% else %}
                     <button class="weekday-card">{{day[5]}}</button>
                 {% endif %}
@@ -108,7 +114,7 @@
 
                     <!-- LOCAL ICONS -->
                     <div class="weather-icon">
-                        <img src="/static/icons/{{weatherDataToday["icon"]}}.png" alt="current weather icon">
+                        <img src="/static/icons/{{ icons_folder }}/{{weatherDataToday["icon"]}}.png" alt="current weather icon">
                     </div>
                 </div>
                 <!--
@@ -143,7 +149,7 @@
 
                     <!-- LOCAL ICONS -->
                     <div class="weather-icon">
-                        <img src="/static/icons/{{weather["icon"]}}.png" alt="current weather icon">
+                        <img src="/static/icons/{{ icons_folder }}/{{weather["icon"]}}.png" alt="current weather icon">
                     </div>
                 </div>
                 <!--
@@ -159,7 +165,11 @@
 
     <!-- logout/footer -->
     <footer class="footer">
-        <a href="{{url_for('logout')}}" class="logout-link">Logout here</a>
+        {% if username != "Guest" %}
+            <a href="{{url_for('logout')}}" class="logout-link">Logout here</a>
+        {% else %}
+            <a href="{{url_for('logout')}}" class="logout-link">Login here</a>
+        {% endif %}
     </footer>
 </body>
 {% endblock %}

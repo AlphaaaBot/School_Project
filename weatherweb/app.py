@@ -22,7 +22,6 @@ app.secret_key = "your_secret_key"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.permanent_session_lifetime = timedelta(days=1)
-app.secret_key = "your_secret_key"
 db = SQLAlchemy(app)
 
 ######################################################
@@ -50,11 +49,17 @@ class User(db.Model):
 class UserSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True, nullable=False)
-    theme = db.Column(db.String(20), default="light")  # "light" oder "dark"
+    theme = db.Column(db.String(20), default="light")
+    icons = db.Column(db.String(20), default="outline")
     favorite_cities = db.Column(db.Text, nullable=True)
-    preferred_units = db.Column(db.String(10), default="metric")  # "metric" oder "imperial"
-
-    # Beziehung zur User-Tabelle (1-zu-1)
+    preferred_units = db.Column(db.String(10), default="metric")
+    temperature = db.Column(db.Boolean, default=True)
+    cloud = db.Column(db.Boolean, default=True)
+    wind = db.Column(db.Boolean, default=True)
+    sea = db.Column(db.Boolean, default=True)
+    precipitation = db.Column(db.Boolean, default=True)
+    
+    # relation to user
     user = db.relationship('User', backref=db.backref('settings', uselist=False))
     
     def setFavoriteCities(self, cities):
@@ -62,7 +67,7 @@ class UserSettings(db.Model):
 
     def getFavoriteCities(self):
         return json.loads(self.favorite_cities) if self.favorite_cities else []
-    
+            
 def createUser(username, password):
     new_user = User(username=username)
     new_user.set_password(password=password)
@@ -99,6 +104,26 @@ def removeFavoriteCity(username, city_name):
             user_settings.setFavoriteCities(favorite_cities)
             db.session.commit()
 
+def getAllSettings():
+        user = User.query.filter_by(username=session["username"]).first()
+        user_settings = UserSettings.query.filter_by(user_id=user.id).first()
+        
+        settings_list = {}
+        
+        icons_folder = user_settings.icons
+        settings_list.update({"icons_folder":icons_folder})
+        temperature = user_settings.temperature
+        settings_list.update({"temperature":temperature})
+        cloud = user_settings.cloud
+        settings_list.update({"cloud":cloud})
+        wind = user_settings.wind
+        settings_list.update({"wind":wind})
+        sea = user_settings.sea
+        settings_list.update({"sea":sea})
+        precipitation = user_settings.precipitation
+        settings_list.update({"precipitation":precipitation})
+        
+        return settings_list
 
 ######################################################
 # API
@@ -189,7 +214,6 @@ class API():
         return weekDays
     
     # APICALLS
-    
     def saveTilesMap(self, city_lat, city_lon, layer_name):
         m = folium.Map(location=[city_lat, city_lon], zoom_start=5)
         
@@ -289,15 +313,21 @@ class API():
     
     def getDashboardForecastInfoAsJSON(self, city, days=0):
         data = self.getWeatherInCityForcastAsJSON(city)
+        current_time = datetime.now().strftime('%H:%M')
+        
         if data != None:
             weather_list = []
             counter = 0
             while counter < int(data["cnt"]):
                 weather_dashboard_obj = {}
                 
+                is_time_okay = True
+                if days == 0:
+                    is_time_okay = not current_time > obj_datetime["time"] and days == 0
+                
                 # timezone
                 obj_datetime = self.getDateAndTimeFromString(data["list"][counter]["dt_txt"])
-                if self.isDateTimeTheSame(given_datetime=obj_datetime["date"], day=days):
+                if self.isDateTimeTheSame(given_datetime=obj_datetime["date"], day=days) and is_time_okay:
                     weather_dashboard_obj.update({"date":str(obj_datetime["date"])})
                     weather_dashboard_obj.update({"time":str(obj_datetime["time"])})
                     
@@ -353,7 +383,7 @@ class API():
                 # timezone
                 obj_datetime = self.getDateAndTimeFromString(data["list"][counter]["dt_txt"])
                 if self.isDateTimeTheSame(given_datetime=obj_datetime["date"], day=days):
-                    if time_counter == 4:
+                    if time_counter == 3:
                         weather_dashboard_obj.update({"date":str(obj_datetime["date"])})
                         weather_dashboard_obj.update({"time":str(obj_datetime["time"])})
                         
@@ -408,6 +438,20 @@ class API():
             return data["city"]
         except:
             return None
+
+    def isCityFavorite(self, city):
+        if session["username"] != "Guest":
+            user = User.query.filter_by(username=session["username"]).first()
+            user_settings = UserSettings.query.filter_by(user_id=user.id).first()
+            
+            if user_settings:
+                favorite_cities = user_settings.getFavoriteCities()
+                
+                for current_city in favorite_cities:
+                    if current_city == city:
+                        return True
+                    
+        return False
 
 ######################################################
 # ROUTES
@@ -478,22 +522,26 @@ def index():
     
     favorite_cities = []
     city_data = []
+    icons_folder = "outline"
+    
     if session["username"] != "Guest":
+        print(session["username"])
+        
         user = User.query.filter_by(username=session["username"]).first()
         user_settings = UserSettings.query.filter_by(user_id=user.id).first()
         
         if user_settings:
+            settings_list = getAllSettings()
+            icons_folder = settings_list["icons_folder"]
             favorite_cities = user_settings.getFavoriteCities()
-            print(favorite_cities)
             
             fetch_api = API()
             
             for city in favorite_cities:                
                 current_weather_data = fetch_api.getDashboardInfoAsJSON(city=city)
                 city_data.append(current_weather_data)
-            
-    return render_template("index.html", favorite_cities=favorite_cities, username=session["username"], weather_data=city_data)
-
+    
+    return render_template("index.html", favorite_cities=favorite_cities, username=session["username"], weather_data=city_data, icons_folder=icons_folder)
 
 @app.route('/addordeletecity/<city>/<redirect_to>', methods=['POST'])
 def addordeletecity(city, redirect_to):
@@ -552,24 +600,34 @@ def settings():
     if request.method == "POST":
         user.settings.theme = request.form["theme"]
         user.settings.preferred_units = request.form["preferred_units"]
+        user.settings.icons = request.form["icons"]
+        user.settings.temperature = "temperature" in request.form
+        user.settings.cloud = "cloud" in request.form
+        user.settings.wind = "wind" in request.form
+        user.settings.sea = "sea" in request.form
+        user.settings.precipitation = "precipitation" in request.form
         db.session.commit()
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("settings"))
 
     return render_template("settings.html", user=user)
 
-@app.route('/dashboard', methods=['POST'])
-def dashboard_redirect():
-    city = request.form["city"]
+@app.route('/dashboard', methods=['POST', 'GET'])
+def dashboardredirect():
+    if request.method == "POST":
+        city = request.form["city"]
+    else:
+        fetch_api = API()
+        city = fetch_api.getGeolocationCity()
+        # Test
+        print(f"return geolocation: {fetch_api.getGeolocationCity()}")
+        print(f"chosen city: {city}")
+        #
     
-    print(f"WHAT THE FUCK IS THIS: {city}")
-    
-    if city:
-        return redirect(url_for('dashboard', city=city))
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard', city=city)) if city else redirect(url_for('index'))
 
-@app.route('/dashboard/<city>', methods=['GET', 'POST'])
+@app.route('/dashboard/<city>', methods=['GET'])
 def dashboard(city):
-    """Shows the current Homepage, with fetched api data to current city
+    """Shows the current Dashboard, with fetched api data for the current day and forecast to current city
 
     Returns:
         Homepage: if logged in
@@ -577,78 +635,48 @@ def dashboard(city):
     """
     if "username" not in session:
         return redirect(url_for("login"))
-    
+
     fetch_api = API()
     
-    weather_maps = [
-        {"title": "Temperature", "url": "/static/maps/tempmap.html"},
-        {"title": "Cloud Coverage", "url": "/static/maps/cloudmap.html"},
-        {"title": "Wind", "url": "/static/maps/windmap.html"},
-        {"title": "Sea Level Pressure", "url": "/static/maps/pressuremap.html"},
-        {"title": "Precipitation", "url": "/static/maps/precipitationmap.html"},
-    ]
+    icons_folder = "outline"
+    temperature, cloud, wind, sea, precipitation = True, True, True, True, True
     
-    if request.method == "POST":
-        city_name = city
-        
-        data = fetch_api.getDashboardInfoAsJSON(city=city_name)
-        data_forecast = fetch_api.getDashboardForecastForOneOfAllDatesInfoAsJSON(city=city_name)
-        
-        print("test 1")
-        
-        if data == None:
-            print("test 2")
-            city_name = fetch_api.getGeolocationCity()  # Needs fixing..
-            if city_name == None:
-                print("test 3")
-                city_name = "Bad Nauheim"
-                data = fetch_api.getDashboardInfoAsJSON(city=city_name)
-        
-        fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
-        
-        weekDays = fetch_api.getWeekdaysAsList()
-        
-        if data != None:
-            print("test 4")
-            return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, city=city, weather_maps=weather_maps)
-        else:
-            print("test 5")
-            data = fetch_api.getDashboardInfoAsJSON(city="Bad Nauheim")
-            errorMsg = "City was not found."
-            
-            fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
+    if session["username"] != "Guest":
+        settings_list = getAllSettings()
+        icons_folder = settings_list["icons_folder"]
+        temperature = settings_list["temperature"]
+        cloud = settings_list["cloud"]
+        wind = settings_list["wind"]
+        sea = settings_list["sea"]
+        precipitation = settings_list["precipitation"]
+    
+    weather_maps = [
+        {"title": "Temperature", "url": "/static/maps/tempmap.html", "active": temperature},
+        {"title": "Cloud Coverage", "url": "/static/maps/cloudmap.html", "active": cloud},
+        {"title": "Wind", "url": "/static/maps/windmap.html", "active": wind},
+        {"title": "Sea Level Pressure", "url": "/static/maps/pressuremap.html", "active": sea},
+        {"title": "Precipitation", "url": "/static/maps/precipitationmap.html", "active": precipitation},
+    ]
 
-            return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, city=city, weather_maps=weather_maps, error=errorMsg)
-    else:
-        print("test 6")
-        
-        city_name = city
-        
-        data = fetch_api.getDashboardInfoAsJSON(city=city_name)
-        data_forecast = fetch_api.getDashboardForecastForOneOfAllDatesInfoAsJSON(city=city_name)
-        
-        weekDays = fetch_api.getWeekdaysAsList()
-        
-        if data != None:
-            print("test 7")
-            
-            fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
-            return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, city=city, weather_maps=weather_maps)
-        else:
-            print("test 8")
-            city_name = "Bad Nauheim"
-            
-            data = fetch_api.getDashboardInfoAsJSON(city=city_name)
+    if request.method == "GET":
+        data = fetch_api.getDashboardInfoAsJSON(city)
+        if not data:
+            city = fetch_api.getGeolocationCity() or "Bad Nauheim"
+            data = fetch_api.getDashboardInfoAsJSON(city)
             errorMsg = "City was not found and was set to default."
-            
-            fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
-            data_forecast = fetch_api.getDashboardForecastForOneOfAllDatesInfoAsJSON(city=city_name)
-            
-            return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, city=city, weather_maps=weather_maps, error=errorMsg)
+        else:
+            errorMsg = None
+        
+        is_favorite = fetch_api.isCityFavorite(city)
+        data_forecast = fetch_api.getDashboardForecastForOneOfAllDatesInfoAsJSON(city)
+        weekDays = fetch_api.getWeekdaysAsList()
+        fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
+
+        return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, city=city, weather_maps=weather_maps, error=errorMsg, is_favorite=is_favorite, icons_folder=icons_folder)
 
 @app.route('/dashboardforecast/<city>/<day>', methods=['GET'])
 def dashboardforecast(city, day):
-    """Shows the current Homepage, with fetched api data for the current day to current city
+    """Shows the current Dashboardforecast, with fetched api data for the current day to current city
 
     Returns:
         Homepage: if logged in
@@ -659,11 +687,18 @@ def dashboardforecast(city, day):
     
     fetch_api = API()
     
+    icons_folder = "outline"
+    
+    if session["username"] != "Guest":
+        user = User.query.filter_by(username=session["username"]).first()
+        user_settings = UserSettings.query.filter_by(user_id=user.id).first()
+        icons_folder = user_settings.icons
+    
     if request.method == "GET":
         city_name = city
         
         if city_name == None or city_name == "":
-            city_name="Bad Nauheim"
+            city_name = fetch_api.getGeolocationCity() or "Bad Nauheim"
         
         data = fetch_api.getDashboardForecastInfoAsJSON(city=city_name, days=day)
         
@@ -671,19 +706,9 @@ def dashboardforecast(city, day):
         
         if int(day) == 0:
             data_today = fetch_api.getDashboardInfoAsJSON(city=city_name)
-            return render_template("dashboardforecast.html", username=session["username"], weatherData=data, weatherDataToday=data_today, is_today=True, day=weekDays, city=city_name, button_pressed=day)
+            return render_template("dashboardforecast.html", username=session["username"], weatherData=data, weatherDataToday=data_today, is_today=True, day=weekDays, city=city_name, button_pressed=day, icons_folder=icons_folder)
         else:
-            return render_template("dashboardforecast.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, button_pressed=day)
-
-#########################################################################
-# What is this for? The function is missing
-@app.route('/getusers', methods=['GET'])
-def getusers():
-    """
-    Shows all users in a json
-    """
-    return db.getUsers(), 201, {'ContentType':'application/json'}
-#########################################################################
+            return render_template("dashboardforecast.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, button_pressed=day, icons_folder=icons_folder)
 
 @app.route('/logout', methods=['GET'])
 def logout():

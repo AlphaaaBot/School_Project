@@ -6,17 +6,19 @@
     <header class="header">
         <h1>Weather<span class="highlight">WEB</span></h1>
         <div class="search-container">
-            <form action="{{ url_for('dashboard_redirect') }}" method="POST">
+            <form action="{{ url_for('dashboardredirect') }}" method="GET">
+                <button id="geo-button" class="geolocation-button" type="submit" title="Use current location">📍</button>
+            </form>
+            <form action="{{ url_for('dashboardredirect') }}" method="POST">
                 <input type="text" id="city" name="city" placeholder="Enter a city" value="{{ city }}" required>
                 <button id="search" name="test" class="button_search" type="submit">Search</button>
             </form>
         </div>
     </header>
 
-    <!-- Hidden Checkbox to control sidebar toggle -->
+    <!-- sidebar -->
     <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-checkbox">
 
-    <!-- Sidebar -->
     <div class="custom-sidebar">
         <nav>
             <ul>
@@ -31,17 +33,21 @@
         </nav>
     </div>
 
-    <!-- Sidebar Toggle Button (Hamburger Icon) -->
     <label for="sidebar-toggle" class="sidebar-toggle-label">
-        &#9776; <!-- Hamburger Icon -->
+        &#9776; <!-- hamburger -->
     </label>
 
-    <!-- error message-->
-    <p class="errorMsg">{{error}}</p>
+    <!-- error message -->
+    {% if error != None %}
+        <p class="errorMsg">{{error}}</p>
+    {% endif %}
 
     <main class="main-content">
-        <!-- weekdays -->
+        <!-- dashboard/weekdays -->
         <section class="weekdays">
+            <form action="{{ url_for('dashboard', city=city) }}" method="get">
+                <button class="weekday-card weekday-card-clicked">Dashboard</button>
+            </form>
             <form action="{{ url_for('dashboardforecast', city=city, day=0) }}" method="get">
                 <button class="weekday-card">Today</button>
             </form>
@@ -62,7 +68,7 @@
             </form>
         </section>
 
-        <!-- weathercard/weathercards -->
+        <!-- main weathercard -->
         <section class="weather-card">
             <div class="weather-header">
                 <p class="city-info">{{ weatherData["name"] }}, {{ weatherData["country"] }} - {{weatherData["time"]}} Uhr</p>
@@ -83,7 +89,7 @@
 
                 <!-- LOCAL ICONS -->
                 <div class="weather-icon">
-                    <img src="/static/icons/{{weatherData["icon"]}}.png" alt="current weather info">
+                    <img src="/static/icons/{{ icons_folder }}/{{weatherData["icon"]}}.png" alt="current weather info">
                 </div>
             </div>
             <!--
@@ -92,20 +98,33 @@
                 <a href="#" class="info-link">Mehr Infos!</a>
             </div>
             -->
-            {% if username != "Guest" %}
-                <form action="{{url_for('addordeletecity', city=weatherData["name"], redirect_to="dashboard")}}" method="POST">
-                    <button type="submit" class="favorite-btn">
-                        -
-                    </button>
-                </form>
-            {% endif %}
-            <input type="hidden" name="city" value="{{ city }}">
+            <div class="weather-footer">
+                {% if username != "Guest" %}
+                <div style="justify-items: center; padding: 0px;">
+                    <div class="weather-footer">
+                        <form action="{{ url_for('addordeletecity', city=weatherData['name'], redirect_to='dashboard') }}" method="POST">
+                            <button type="submit" class="favorite-btn" title="Toggle Favorite">
+                                {% if is_favorite %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            </button>
+                        </form>
+                        <input type="hidden" name="city" value="{{ city }}">
+                    </div>
+                </div>
+                {% endif %}
+
+                <a href="{{ url_for('dashboardforecast', city=city, day=0) }}" class="info-link">More -----------></a>
+            </div>
+            <!-- <input type="hidden" name="city" value="{{ city }}"> -->
         </section>
         <hr>
 
         <div class="row">
         {% for weather in weatherDataForecast %}
-            <!-- weathercard small/weathercards small -->
+            <!-- small weathercards -->
             <section class="weather-card-small">
                 <div class="weather-main-small">
                     <div class="temperature">
@@ -123,27 +142,32 @@
 
                     <!-- LOCAL ICONS -->
                     <div class="weather-icon-small">
-                        <img src="/static/icons/{{ weather["icon"] }}.png" alt="current weather info">
+                        <img src="/static/icons/{{ icons_folder }}/{{ weather["icon"] }}.png" alt="current weather info">
                     </div>
                 </div>
                 <p class="date-small">{{weather["date"]}}</p>
                 <div class="weather-footer">
-                    <a href="{{ url_for('dashboardforecast', city=city, day=weather["day"]) }}" class="info-link">More..</a>
+                    <a href="{{ url_for('dashboardforecast', city=city, day=weather["day"]) }}" class="info-link">More ------></a>
                 </div>
             </section>
         {% endfor %}
         </div>
     </main>
 
+    <!-- maps -->
     <section class="weather-info">
         <h2 style="text-align:center; font-size: 40px;">Weather Maps</h2>
         <div class="map-container">
-            {% for map in weather_maps %}
-            <div class="map-box">
-                <h3>{{ map.title }}</h3>
-                <iframe src="{{ map.url }}"></iframe>
-            </div>
-            {% endfor %}
+            {% if weather_maps != [] %}
+                {% for map in weather_maps %}
+                    {% if map.active == 1 %}
+                        <div class="map-box">
+                            <h3>{{ map.title }}</h3>
+                            <iframe src="{{ map.url }}"></iframe>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
         <div style="padding:20px;"></div>
     </section>

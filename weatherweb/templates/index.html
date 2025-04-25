@@ -6,9 +6,12 @@
     <header class="header">
         <h1>Weather<span class="highlight">WEB</span></h1>
         <div class="search-container">
-            <form action="{{ url_for('dashboard_redirect') }}" method="POST">
+            <form action="{{ url_for('dashboardredirect') }}" method="GET">
+                <button id="geo-button" class="geolocation-button" type="submit" title="Use current location">📍</button>
+            </form>
+            <form action="{{ url_for('dashboardredirect') }}" method="POST">
                 <input type="text" id="city" name="city" placeholder="Enter a city" required>
-                <button id="search" name="test" class="button_search" type="submit">Search</button>
+                <button id="search" class="button_search" type="submit">Search</button>
             </form>
         </div>
     </header>
@@ -38,40 +41,43 @@
 
     <main>
         {% if username != "Guest" %}
-        <h2 style="text-align:center; font-size: 40px;">Your favorite cities</h2>
-            {% for weather in weather_data%}
-            <div class="weather-container">
-                <section class="weather-card">
-                    <div class="weather-header">
-                        <p class="city-info">{{ weather["name"] }}, {{ weather["country"] }} - {{weather["time"]}} Uhr</p>
-                        <p class="date">{{weather["date"]}}</p>
+            {% if weather_data != [] %}
+                <h2 style="text-align:center; font-size: 40px;">Your favorite cities</h2>
+                    {% for weather in weather_data %}
+                    <div class="weather-container">
+                        <section class="weather-card">
+                            <div class="weather-header">
+                                <p class="city-info">{{ weather["name"] }}, {{ weather["country"] }} - {{weather["time"]}} Uhr</p>
+                                <p class="date">{{weather["date"]}}</p>
+                            </div>
+                    
+                            <div class="weather-main">
+                                <div class="temperature">
+                                    <p class="temp-value">{{ weather["temp"] }}°C</p>
+                                    <p class="feels-like">Feels like: {{ weather["feels_like"] }}°C</p>
+                                    <p class="weather-description">{{ weather["description"] }}</p>
+                                </div>
+                    
+                                <div class="weather-icon">
+                                    <img src="/static/icons/{{icons_folder}}/{{weather["icon"]}}.png" alt="current weather info">
+                                </div>
+                            </div>
+                            <div style="justify-items: center; padding: 0px;">
+                                <div class="weather-footer">
+                                    <form action="{{ url_for('addordeletecity', city=weather['name'], redirect_to='dashboard') }}" method="POST">
+                                        <button type="submit" class="favorite-btn" title="Toggle Favorite">
+                                            <i class="fas fa-star"></i>
+                                        </button>
+                                    </form>
+                                    <input type="hidden" name="city" value="{{ city }}">
+                                </div>
+                            </div>
+                        </section>
                     </div>
-            
-                    <div class="weather-main">
-                        <div class="temperature">
-                            <p class="temp-value">{{ weather["temp"] }}°C</p>
-                            <p class="feels-like">Feels like: {{ weather["feels_like"] }}°C</p>
-                            <p class="weather-description">{{ weather["description"] }}</p>
-                        </div>
-            
-                        <div class="weather-icon">
-                            <img src="/static/icons/{{weather["icon"]}}.png" alt="current weather info">
-                        </div>
-                    </div>
-                    <form action="{{url_for('addordeletecity', city=weather["name"], redirect_to="index")}}" method="POST">
-                        <button type="submit" class="favorite-btn">
-                            -
-                        </button>
-                    </form>
-                    <input type="hidden" name="city" value="{{ city }}">
-                    <div style="justify-items: anchor-center; padding: 0px;">
-                        <div class="weather-footer">
-                            <a href="{{ url_for('dashboard', city=weather["name"]) }}" class="info-link">More..</a>
-                        </div>
-                    </div>
-                </section>
-            </div>           
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <h2 style="text-align:center; font-size: 40px;">Search for some cities and set them as favorites!</h2>
+            {% endif %}
             <div style="padding: 20px;"></div> 
         {% else %}
             <div style="justify-self: center;">
