@@ -73,17 +73,23 @@ h1 {
 }
 
 .geolocation-button {
-    background: var(--primary-button-background-color);
+    background: var(--secondary-button-background-color);
     border: 2px solid var(--primary-text-color);
     border-radius: 8px;
-    font-size: 30px;
+    font-size: 25px;
     cursor: pointer;
     transition: all 0.1s ease;
 }
 
-.geolocation-buton:hover {
+.geolocation-button:hover {
     background: var(--secondary-button-background-hover-color);
     transform: scale(1.02);
+}
+
+.geo {
+    width: 28px;
+    height: auto;
+    padding-top: 7px;
 }
 
 #city {
@@ -91,12 +97,12 @@ h1 {
     font-size: 16px;
     border-radius: 8px;
     border: 2px solid var(--primary-text-color);
-    width: 40vw; /* Takes 40% of the viewport width */
-    max-width: 500px; /* Ensures it doesn't get too large */
-    min-width: 250px; /* Prevents it from becoming too small */
+    width: 40vw;
+    max-width: 500px;
+    min-width: 250px;
     background: var(--secondary-text-color);
     color: var(--primary-text-color);
-    transition: border 0.3s ease, width 0.3s ease; /* Smooth resizing */
+    transition: border 0.3s ease, width 0.3s ease;
     box-sizing: border-box;
 }
 
@@ -105,10 +111,9 @@ h1 {
     outline: none;
 }
 
-/* Ensure the search container is properly aligned */
 .search-container {
     display: flex;
-    justify-content: center; /* Centers the input */
+    justify-content: center;
     width: 100%;
     margin: 0 auto;
 }
@@ -118,7 +123,7 @@ h1 {
     padding: 12px 20px;
     font-size: 16px;
     background: var(--secondary-button-background-color);
-    border: 2px solid var(--primary-text-color); /* maybe */
+    border: 2px solid var(--primary-text-color);
     color: var(--secondary-text-color);
     border-radius: 8px;
     cursor: pointer;
@@ -127,7 +132,7 @@ h1 {
 
 .button_search:hover {
     background: var(--secondary-button-background-hover-color);
-    border: 2px solid var(--primary-text-color); /* maybe */
+    border: 2px solid var(--primary-text-color);
     transform: scale(1.02);
 }
 
@@ -317,7 +322,6 @@ hr {
 .info-link:hover {
     text-decoration: underline;
 }
-/* ? */
 
 .footer {
     text-align: center;

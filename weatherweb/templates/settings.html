@@ -39,17 +39,18 @@
 
             <label for="preferred_units" style="font-weight: 700;">Preferred Units:</label>
             <select id="preferred_units" name="preferred_units">
-                <option value="metric" {% if user.settings.preferred_units == "metric" %} selected {% endif %}>Metric (°C, km/h)</option>
-                <option value="imperial" {% if user.settings.preferred_units == "imperial" %} selected {% endif %}>Imperial (°F, mph)</option>
+                <option value="metric" {% if user.settings.preferred_units == "metric" %} selected {% endif %}>Metric (°C)</option>
+                <option value="imperial" {% if user.settings.preferred_units == "imperial" %} selected {% endif %}>Imperial (°F)</option>
             </select>
 
             <label for="icons" style="font-weight: 700;">Icons Style:</label>
             <select id="icons" name="icons">
                 <option value="outline" {% if user.settings.icons == "outline" %} selected {% endif %}>Outline</option>
                 <option value="flat" {% if user.settings.icons == "flat" %} selected {% endif %}>Flat</option>
+                <option value="api" {% if user.settings.icons == "api" %} selected {% endif %}>API</option>
             </select>
 
-            <label for="maps" style="font-weight: 700;">Maps:</label>
+            <label for="maps" style="font-weight: 700;">Maps in Dashboard:</label>
             <div class="checkbox-group">
                 <div class="row-settings">
                     <label>Temperature: </label>
@@ -80,6 +81,8 @@
             <button type="submit">Save Settings</button>
         </form>
     </main>
+
+    <div style="padding:20px;"></div>
 
     <footer class="footer">
         {% if username != "Guest" %}

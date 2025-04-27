@@ -7,7 +7,9 @@
         <h1>Weather<span class="highlight">WEB</span></h1>
         <div class="search-container">
             <form action="{{ url_for('dashboardredirect') }}" method="GET">
-                <button id="geo-button" class="geolocation-button" type="submit" title="Use current location">📍</button>
+                <button id="geo-button" class="geolocation-button" type="submit" title="Use current location">
+                    <img class="geo" src="/static/geo/geo.png">
+                </button>
             </form>
             <form action="{{url_for("dashboardredirect")}}" method="POST">
                 <input type="text" id="city" name="city" placeholder="Enter a city" value="{{ city }}" required>
@@ -101,28 +103,27 @@
                 </div>
                 <div class="weather-main">
                     <div class="temperature">
-                        <p class="temp-value">{{ weatherDataToday["temp"] }}°</p>
+                        {% if preferred_units == "metric" %}
+                            <p class="temp-value">{{ weatherDataToday["temp"] }}°C</p>
+                            <p class="feels-like">Feels like: {{ weatherDataToday["feels_like"] }}°C</p>
+                        {% else %}
+                            <p class="temp-value">{{ weatherDataToday["temp"] }}°F</p>
+                            <p class="feels-like">Feels like: {{ weatherDataToday["feels_like"] }}°F</p>
+                        {% endif %}
                         <p class="weather-description">{{ weatherDataToday["description"] }}</p>
-                        <p class="feels-like">Feels like: {{ weatherDataToday["feels_like"] }}°</p>
                     </div>
-                    <!-- ONLINE ICONS -->
-                    <!--
-                    <div class="weather-icon">
-                        <img src="https://openweathermap.org/img/w/{{ weatherDataToday["icon"] }}.png" alt="current weather icon">
-                    </div>
-                    -->
-
-                    <!-- LOCAL ICONS -->
-                    <div class="weather-icon">
-                        <img src="/static/icons/{{ icons_folder }}/{{weatherDataToday["icon"]}}.png" alt="current weather icon">
-                    </div>
+                    {% if icons_folder != "api" %}
+                        <!-- LOCAL ICONS -->
+                        <div class="weather-icon">
+                            <img src="/static/icons/{{ icons_folder }}/{{ weatherDataToday["icon"] }}.png" alt="current weather info">
+                        </div>
+                    {% else %}
+                        <!-- ONLINE ICONS --> 
+                        <div class="weather-icon">
+                            <img src="https://openweathermap.org/img/w/{{ weatherDataToday["icon"] }}.png" alt="current weather icon">
+                        </div>
+                    {% endif %}
                 </div>
-                <!--
-                <div class="weather-footer">
-                    <p class="warningText"><strong>Warnung:</strong> FROST!</p>
-                    <a href="#" class="info-link">Mehr Infos!</a>
-                </div>
-                -->
             </section>
             <hr>
         {% endif %}
@@ -136,32 +137,33 @@
                 </div>
                 <div class="weather-main">
                     <div class="temperature">
-                        <p class="temp-value">{{ weather["temp"] }}°</p>
+                        {% if preferred_units == "metric" %}
+                            <p class="temp-value">{{ weather["temp"] }}°C</p>
+                            <p class="feels-like">Feels like: {{ weather["feels_like"] }}°C</p>
+                        {% else %}
+                            <p class="temp-value">{{ weather["temp"] }}°F</p>
+                            <p class="feels-like">Feels like: {{ weather["feels_like"] }}°F</p>
+                        {% endif %}
                         <p class="weather-description">{{ weather["description"] }}</p>
-                        <p class="feels-like">Feels like: {{ weather["feels_like"] }}°</p>
                     </div>
-                    <!-- ONLINE ICONS -->
-                    <!--
-                    <div class="weather-icon">
-                        <img src="https://openweathermap.org/img/w/{{ weather["icon"] }}.png" alt="current weather icon">
-                    </div>
-                    -->
-
-                    <!-- LOCAL ICONS -->
-                    <div class="weather-icon">
-                        <img src="/static/icons/{{ icons_folder }}/{{weather["icon"]}}.png" alt="current weather icon">
-                    </div>
+                    {% if icons_folder != "api" %}
+                        <!-- LOCAL ICONS -->
+                        <div class="weather-icon">
+                            <img src="/static/icons/{{ icons_folder }}/{{ weather["icon"] }}.png" alt="current weather info">
+                        </div>
+                    {% else %}
+                        <!-- ONLINE ICONS --> 
+                        <div class="weather-icon">
+                            <img src="https://openweathermap.org/img/w/{{ weather["icon"] }}.png" alt="current weather icon">
+                        </div>
+                    {% endif %}
                 </div>
-                <!--
-                <div class="weather-footer">
-                    <p class="warningText"><strong>Warnung:</strong> FROST!</p>
-                    <a href="#" class="info-link">Mehr Infos!</a>
-                </div>
-                -->
             </section>
             <hr>
         {% endfor %}
     </main>
+
+    <div style="padding:20px;"></div>
 
     <!-- logout/footer -->
     <footer class="footer">

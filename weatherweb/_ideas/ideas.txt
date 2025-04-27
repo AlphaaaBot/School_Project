@@ -1,25 +1,5 @@
 Seite: https://search.brave.com/search?q=wetter+info&source=desktop
-Seite: https://www.techlicious.com/guide/4-best-weather-sites/
-
-city, state, countrycode
-status - datetime
-
-[row]
-	[column]
-	icon, degree
-
-	[column]
-	humidity
-	rain
-	wind
-	
-	[row]
-	small div with icon and degrees, aswell with weekday
-
-[row]
-	[column]
-	
-
+Seite: https://www.techlicious.com/guide/4-best-weather-sites/	
 
 [Erweiterungen]
 
@@ -39,6 +19,7 @@ Implemented (DONE):
 - Fix settings redirect to index
 - Fix dashboard seite redirect from dashboardForecast
 - Settings, Karten ausblenden lassen (bools)
+- Metric und Imperial implementiert
 
 Must have:
 - /

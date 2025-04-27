@@ -7,7 +7,9 @@
         <h1>Weather<span class="highlight">WEB</span></h1>
         <div class="search-container">
             <form action="{{ url_for('dashboardredirect') }}" method="GET">
-                <button id="geo-button" class="geolocation-button" type="submit" title="Use current location">📍</button>
+                <button id="geo-button" class="geolocation-button" type="submit" title="Use current location">
+                    <img class="geo" src="/static/geo/geo.png">
+                </button>
             </form>
             <form action="{{ url_for('dashboardredirect') }}" method="POST">
                 <input type="text" id="city" name="city" placeholder="Enter a city" required>
@@ -53,23 +55,39 @@
                     
                             <div class="weather-main">
                                 <div class="temperature">
-                                    <p class="temp-value">{{ weather["temp"] }}°C</p>
-                                    <p class="feels-like">Feels like: {{ weather["feels_like"] }}°C</p>
+                                    {% if preferred_units == "metric" %}
+                                        <p class="temp-value">{{ weather["temp"] }}°C</p>
+                                        <p class="feels-like">Feels like: {{ weather["feels_like"] }}°C</p>
+                                    {% else %}
+                                        <p class="temp-value">{{ weather["temp"] }}°F</p>
+                                        <p class="feels-like">Feels like: {{ weather["feels_like"] }}°F</p>
+                                    {% endif %}
                                     <p class="weather-description">{{ weather["description"] }}</p>
                                 </div>
                     
                                 <div class="weather-icon">
-                                    <img src="/static/icons/{{icons_folder}}/{{weather["icon"]}}.png" alt="current weather info">
+                                    {% if icons_folder != "api" %}
+                                        <!-- LOCAL ICONS -->
+                                        <div class="weather-icon">
+                                            <img src="/static/icons/{{ icons_folder }}/{{ weather["icon"] }}.png" alt="current weather info">
+                                        </div>
+                                    {% else %}
+                                        <!-- ONLINE ICONS --> 
+                                        <div class="weather-icon">
+                                            <img src="https://openweathermap.org/img/w/{{ weather["icon"] }}.png" alt="current weather icon">
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
-                            <div style="justify-items: center; padding: 0px;">
+                            <div style="justify-items: end; padding: 0px;">
                                 <div class="weather-footer">
-                                    <form action="{{ url_for('addordeletecity', city=weather['name'], redirect_to='dashboard') }}" method="POST">
+                                    <form action="{{ url_for('addordeletecity', city=weather['name'], redirect_to='index') }}" method="POST">
                                         <button type="submit" class="favorite-btn" title="Toggle Favorite">
                                             <i class="fas fa-star"></i>
                                         </button>
                                     </form>
-                                    <input type="hidden" name="city" value="{{ city }}">
+
+                                    <a href="{{ url_for('dashboard', city=weather["name"]) }}" class="info-link">More -----------></a>
                                 </div>
                             </div>
                         </section>
