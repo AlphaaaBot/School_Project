@@ -99,25 +99,29 @@
                     </div>
                 {% endif %}
             </div>
-            <div class="weather-footer">
-                {% if username != "Guest" %}
-                <div style="justify-items: center; padding: 0px;">
-                    <div class="weather-footer">
-                        <form action="{{ url_for('addordeletecity', city=weatherData['name'], redirect_to='dashboard') }}" method="POST">
-                            <button type="submit" class="favorite-btn" title="Toggle Favorite">
-                                {% if is_favorite %}
-                                    <i class="fas fa-star"></i>
-                                {% else %}
-                                    <i class="far fa-star"></i>
-                                {% endif %}
-                            </button>
-                        </form>
-                        <input type="hidden" name="city" value="{{ city }}">
+            {% if username != "Guest" %}
+                <div class="weather-footer">
+                    <div style="justify-items: center; padding: 0px;">
+                        <div class="weather-footer">
+                            <form action="{{ url_for('addordeletecity', city=weatherData['name'], redirect_to='dashboard') }}" method="POST">
+                                <button type="submit" class="favorite-btn" title="Toggle Favorite">
+                                    {% if is_favorite %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                </button>
+                            </form>
+                            <input type="hidden" name="city" value="{{ city }}">
+                        </div>
                     </div>
+                    <a href="{{ url_for('dashboardforecast', city=city, day=0) }}" class="info-link">More -----------></a>
                 </div>
-                {% endif %}
-
-                <a href="{{ url_for('dashboardforecast', city=city, day=0) }}" class="info-link">More -----------></a>
+            {% else %}
+                <div class="weather-footer" style="justify-content: end;">
+                    <a href="{{ url_for('dashboardforecast', city=city, day=0) }}" class="info-link">More -----------></a>
+                </div>
+            {% endif %}
             </div>
         </section>
         <hr>
@@ -160,19 +164,21 @@
 
     <!-- maps -->
     <section class="weather-info">
-        <h2 style="text-align:center; font-size: 40px;">Weather Maps</h2>
-        <div class="map-container">
-            {% if weather_maps != [] %}
-                {% for map in weather_maps %}
-                    {% if map.active == 1 %}
-                        <div class="map-box">
-                            <h3>{{ map.title }}</h3>
-                            <iframe src="{{ map.url }}"></iframe>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
+        {%if are_all_maps_turned_off == False %}
+            <h2 style="text-align:center; font-size: 40px;">Weather Maps</h2>
+            <div class="map-container">
+                {% if weather_maps != [] %}
+                    {% for map in weather_maps %}
+                        {% if map.active == 1 %}
+                            <div class="map-box">
+                                <h3>{{ map.title }}</h3>
+                                <iframe src="{{ map.url }}"></iframe>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endif %}
         <div style="padding:20px;"></div>
     </section>
 

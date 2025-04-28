@@ -146,6 +146,7 @@ class API():
         self.web_api_endpoint_raw_data = self.getAPIRawDataEndpointFromEnv()
         self.web_api_endpoint_map_data = self.getAPIMapDataEndpointFromEnv()
         print(f"Raw Data Endpoint: {self.web_api_endpoint_raw_data}")
+        print(f"Map Data Endpoint: {self.web_api_endpoint_map_data}")
 
     # ENV
     def getAPIKeyFromEnv(self):
@@ -634,10 +635,6 @@ def dashboardredirect():
     else:
         fetch_api = API()
         city = fetch_api.getGeolocationCity()
-        # Test
-        print(f"return geolocation: {fetch_api.getGeolocationCity()}")
-        print(f"chosen city: {city}")
-        #
     
     return redirect(url_for('dashboard', city=city)) if city else redirect(url_for('index'))
 
@@ -668,6 +665,14 @@ def dashboard(city):
         precipitation = settings_list["precipitation"]
         preferred_units = settings_list["preferred_units"]
     
+    maps_list = [temperature, cloud, wind, sea, precipitation]
+    
+    are_all_maps_turned_off = True
+    for map in maps_list:
+        if map:
+            are_all_maps_turned_off = False
+            break
+    
     weather_maps = [
         {"title": "Temperature", "url": "/static/maps/tempmap.html", "active": temperature},
         {"title": "Cloud Coverage", "url": "/static/maps/cloudmap.html", "active": cloud},
@@ -690,7 +695,9 @@ def dashboard(city):
         weekDays = fetch_api.getWeekdaysAsList()
         fetch_api.saveAllTilesMapsAsHtml(city_lat=data["lat"], city_lon=data["lon"])
 
-        return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, city=city, weather_maps=weather_maps, error=errorMsg, is_favorite=is_favorite, icons_folder=icons_folder, preferred_units=preferred_units)
+        return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, 
+                               city=city, weather_maps=weather_maps, error=errorMsg, is_favorite=is_favorite, icons_folder=icons_folder, 
+                               preferred_units=preferred_units, are_all_maps_turned_off=are_all_maps_turned_off)
 
 @app.route('/dashboardforecast/<city>/<day>', methods=['GET'])
 def dashboardforecast(city, day):
@@ -727,9 +734,11 @@ def dashboardforecast(city, day):
         
         if int(day) == 0:
             data_today = fetch_api.getDashboardInfoAsJSON(city=city_name)
-            return render_template("dashboardforecast.html", username=session["username"], weatherData=data, weatherDataToday=data_today, is_today=True, day=weekDays, city=city_name, button_pressed=day, icons_folder=icons_folder, preferred_units=preferred_units)
+            return render_template("dashboardforecast.html", username=session["username"], weatherData=data, weatherDataToday=data_today, is_today=True, 
+                                   day=weekDays, city=city_name, button_pressed=day, icons_folder=icons_folder, preferred_units=preferred_units)
         else:
-            return render_template("dashboardforecast.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, button_pressed=day, icons_folder=icons_folder, preferred_units=preferred_units)
+            return render_template("dashboardforecast.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, 
+                                   button_pressed=day, icons_folder=icons_folder, preferred_units=preferred_units)
 
 @app.route('/logout', methods=['GET'])
 def logout():
