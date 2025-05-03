@@ -1,4 +1,4 @@
-Hier wird davon ausgegangen, das Visual Studio Code verwendet wird.
+Hier wird Visual Studio Code verwendet.
 
 Schritt 1:
 
@@ -22,8 +22,8 @@ Text:
 
 web_api_key = [Insert API Key]
 web_api_endpoint_raw_data = https://api.openweathermap.org
-web_api_endpoint_map_data = https://map.openweathermap.org
+web_api_endpoint_map_data = https://tile.openweathermap.org/map
 
 Schritt 4:
 
-Starten Sie die Python Datei app.py, im [ \School_Project\weatherweb ] Verzeichnis, mit dem Befehl: [ python app.py ]
+Starten Sie die Python Datei app.py, im [ \School_Project\weatherweb ] Verzeichnis, mit dem Befehl: [ python app.py ] im Terminal.

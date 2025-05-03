@@ -5,7 +5,7 @@
     <img src="/static/logo/logo.png" width="7%">
     <div class="main_login">
         <h1>WeatherWEB</h1>
-        <h3>Enter your new credentials</h3>
+        <h3 class="account-text">Enter your new credentials</h3>
         <p style="color: red;"><strong>{{info}}</strong></p>
 
         <form action="{{url_for('register')}}" , method="POST">
@@ -22,13 +22,13 @@
             </div>
         </form>
 
-        <p>Already have an account?
+        <p class="account-text">Already have an account?
             <a class="link" href="{{url_for('login')}}">Login to your account</a>
         </p>
     </div>
     <div style="padding:10px;"></div>
     <div class="main_login">
-        <p>Don't need an account?
+        <p class="account-text">Don't need an account?
             <a class="link" href="{{url_for('home')}}">Continue as Guest</a>
         </p>
     </div>

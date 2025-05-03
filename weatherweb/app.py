@@ -67,7 +67,7 @@ class UserSettings(db.Model):
 
     def getFavoriteCities(self):
         return json.loads(self.favorite_cities) if self.favorite_cities else []
-            
+
 def createUser(username, password):
     new_user = User(username=username)
     new_user.set_password(password=password)
@@ -551,6 +551,7 @@ def index():
     
     favorite_cities = []
     city_data = []
+    theme = "light"
     icons_folder = "outline"
     preferred_units = "metric"
     
@@ -562,7 +563,7 @@ def index():
         
         if user_settings:
             settings_list = getAllSettings()
-            print(settings_list)
+            theme = settings_list["theme"]
             icons_folder = settings_list["icons_folder"]
             preferred_units = settings_list["preferred_units"]
             favorite_cities = user_settings.getFavoriteCities()
@@ -573,7 +574,7 @@ def index():
                 current_weather_data = fetch_api.getDashboardInfoAsJSON(city=city)
                 city_data.append(current_weather_data)
     
-    return render_template("index.html", favorite_cities=favorite_cities, username=session["username"], weather_data=city_data, icons_folder=icons_folder, preferred_units=preferred_units)
+    return render_template("index.html", favorite_cities=favorite_cities, username=session["username"], weather_data=city_data, icons_folder=icons_folder, preferred_units=preferred_units, theme=theme)
 
 @app.route('/addordeletecity/<city>/<redirect_to>', methods=['POST'])
 def addordeletecity(city, redirect_to):
@@ -613,7 +614,7 @@ def settings():
     user = User.query.filter_by(username=session["username"]).first()
     if not user:
         return redirect(url_for("login"))
-
+    
     if request.method == "POST":
         user.settings.theme = request.form["theme"]
         user.settings.preferred_units = request.form["preferred_units"]
@@ -626,7 +627,7 @@ def settings():
         db.session.commit()
         return redirect(url_for("settings"))
 
-    return render_template("settings.html", user=user)
+    return render_template("settings.html", user=user, theme=user.settings.theme)
 
 @app.route('/dashboard', methods=['POST', 'GET'])
 def dashboardredirect():
@@ -651,12 +652,14 @@ def dashboard(city):
 
     fetch_api = API()
     
+    theme = "light"
     icons_folder = "outline"
     preferred_units = "metric"
     temperature, cloud, wind, sea, precipitation = True, True, True, True, True
     
     if session["username"] != "Guest":
         settings_list = getAllSettings()
+        theme = settings_list["theme"]
         icons_folder = settings_list["icons_folder"]
         temperature = settings_list["temperature"]
         cloud = settings_list["cloud"]
@@ -697,7 +700,7 @@ def dashboard(city):
 
         return render_template("dashboard.html", username=session["username"], weatherData=data, weatherDataForecast=data_forecast, day=weekDays, 
                                city=city, weather_maps=weather_maps, error=errorMsg, is_favorite=is_favorite, icons_folder=icons_folder, 
-                               preferred_units=preferred_units, are_all_maps_turned_off=are_all_maps_turned_off)
+                               preferred_units=preferred_units, theme=theme, are_all_maps_turned_off=are_all_maps_turned_off)
 
 @app.route('/dashboardforecast/<city>/<day>', methods=['GET'])
 def dashboardforecast(city, day):
@@ -712,6 +715,7 @@ def dashboardforecast(city, day):
     
     fetch_api = API()
     
+    theme = "light"
     icons_folder = "outline"
     preferred_units = "metric"
     
@@ -719,6 +723,7 @@ def dashboardforecast(city, day):
         user = User.query.filter_by(username=session["username"]).first()
         user_settings = UserSettings.query.filter_by(user_id=user.id).first()
         settings_list = getAllSettings()
+        theme = settings_list["theme"]
         icons_folder = settings_list["icons_folder"]
         preferred_units = settings_list["preferred_units"]
         
@@ -735,10 +740,10 @@ def dashboardforecast(city, day):
         if int(day) == 0:
             data_today = fetch_api.getDashboardInfoAsJSON(city=city_name)
             return render_template("dashboardforecast.html", username=session["username"], weatherData=data, weatherDataToday=data_today, is_today=True, 
-                                   day=weekDays, city=city_name, button_pressed=day, icons_folder=icons_folder, preferred_units=preferred_units)
+                                   day=weekDays, city=city_name, button_pressed=day, icons_folder=icons_folder, preferred_units=preferred_units, theme=theme)
         else:
             return render_template("dashboardforecast.html", username=session["username"], weatherData=data, day=weekDays, city=city_name, 
-                                   button_pressed=day, icons_folder=icons_folder, preferred_units=preferred_units)
+                                   button_pressed=day, icons_folder=icons_folder, preferred_units=preferred_units, theme=theme)
 
 @app.route('/logout', methods=['GET'])
 def logout():
